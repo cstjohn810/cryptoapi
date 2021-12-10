@@ -1,0 +1,25 @@
+Package: cryptoapi
+Type: Package
+Title: API Wrapper for Multiple Cryptocurrency Exchanges
+Version: 0.0.0.9000
+Authors@R: c(person("Chris", "St. John", email = "cstjohn810@protonmail.com", role = c("aut", "cre")))
+Maintainer: Chris St. John <cstjohn810@protonmail.com>
+Description: Wrapper to import and analyze data from Kraken, Coinbase, Celsius
+    May add more exchanges in the future.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    caTools,
+    dplyr,
+    digest,
+    here,
+    httr,
+    jsonlite,
+    lubridate,
+    plyr,
+    RCurl,
+    reshape2,
+    stringr,
+    tibble
+    
