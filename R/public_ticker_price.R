@@ -1,7 +1,7 @@
 #' GET current public ticker price and market data
 #'
-#' @param exchange Which exchange to use for price and market data. Choices are binance, binance-us, bitstamp, coinbase, coinbase-pro,
-#'        crypto.com, ftx, ftx-us, gemini, huobi, kraken, and kucoin.
+#' @param exchange Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "coinbase",
+#'        "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", and "kucoin".
 #' @param base_asset Base asset (default BTC)
 #' @param quote_asset Quote asset (default USD)
 #' @param price_only If TRUE, only give current price as a numeric vector. If FALSE, give all market data available from API call.
@@ -129,6 +129,3 @@ public_ticker_price <- function(exchange = "binance", base_asset = "BTC", quote_
     resp
   }
 }
-
-
-

@@ -15,5 +15,6 @@ Imports:
     jsonlite,
     magrittr,
     purrr,
-    tibble
+    tibble,
+    tidyr
 RoxygenNote: 7.1.2

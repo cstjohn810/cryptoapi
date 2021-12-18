@@ -18,7 +18,9 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of cryptoapi is to be a wrapper that imports and analyzes data from Binance, Binance US, Bitstamp, Coinbase, Coinbase Pro, Crypto.com, FTX, FTX US, Gemini, Huobi, Kraken, and Kucoin.
+The goal of cryptoapi is to be a wrapper that imports and analyzes data from Binance, Binance US, Bitstamp, Coinbase, Coinbase Pro, Crypto.com, FTX, FTX US, Gemini, Huobi, Kraken, and Kucoin. 
+
+Use at your own risk.
 
 ## Installation
 

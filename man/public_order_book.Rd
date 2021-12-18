@@ -8,18 +8,40 @@ public_order_book(
   exchange = "binance",
   base_asset = "BTC",
   quote_asset = "USD",
-  ...
+  ...,
+  limit = NULL,
+  group = NULL,
+  level = 1,
+  depth = NULL
 )
 }
 \arguments{
-\item{exchange}{Which exchange to use for price and market data. Choices are binance, binance-us, bitstamp, coinbase-pro,
-crypto.com, ftx, ftx-us, gemini, kraken, and kucoin.}
+\item{exchange}{Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "coinbase-pro",
+"crypto.com", "ftx", "ftx-us", "gemini", "kraken", and "kucoin".}
 
 \item{base_asset}{Base asset (default BTC)}
 
 \item{quote_asset}{Quote asset (default USD)}
 
 \item{...}{Query parameters passed to API call}
+
+\item{limit}{Optional parameter to return specified number of bids and asks.
+Used with binance, binance-us, crypto.com, ftx, and ftx-us.
+Default for binance and binance-us is 100.}
+
+\item{group}{Optional parameter used for accessing different data from order book from bitstamp.
+Possible values are 0 (orders are not grouped at same price), 1 (orders are grouped at same price - default)
+or 2 (orders with their order ids are not grouped at same price).}
+
+\item{level}{Optional parameter used for coinbase-pro. Levels 1 and 2 are aggregated.
+The size field is the sum of the size of the orders at that price, and num-orders is the count of orders at that price;
+size should not be multiplied by num-orders. Level 3 is non-aggregated and returns the entire order book.}
+
+\item{depth}{Optional parameter used to specify number of bids and asks to return.
+Default for crypto.com is max of 150.
+Default for ftx and ftx-us is 20 with max of 100.
+Default for gemini is 50.
+Default for kraken is 100 with max of 500. May be 0 to return the full order book.}
 }
 \value{
 
@@ -29,4 +51,13 @@ GET current public order book data
 }
 \examples{
 public_order_book(exchange = "binance")
+public_order_book(exchange = "binance-us")
+public_order_book(exchange = "bitstamp")
+public_order_book(exchange = "coinbase-pro")
+public_order_book(exchange = "crypto.com")
+public_order_book(exchange = "ftx")
+public_order_book(exchange = "ftx-us")
+public_order_book(exchange = "gemini")
+public_order_book(exchange = "kraken")
+public_order_book(exchange = "kucoin")
 }

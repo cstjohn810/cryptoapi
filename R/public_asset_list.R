@@ -1,7 +1,7 @@
 #' GET asset list for each exchange
 #'
-#' @param exchange Which exchange to use for list and market data. Choices are binance, binance-us, bitstamp, coinbase, coinbase-pro,
-#'        crypto.com, ftx, ftx-us, gemini, huobi, kraken, and kucoin.
+#' @param exchange Which exchange to use for list and market data. Choices are "binance", "binance-us", "bitstamp", "coinbase",
+#'        "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", and "kucoin".
 #'
 #' @return
 #' @export
