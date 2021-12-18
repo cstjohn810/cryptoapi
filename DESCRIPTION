@@ -4,23 +4,16 @@ Title: API Wrapper for Multiple Cryptocurrency Exchanges
 Version: 0.0.0.9000
 Authors@R: c(person("Chris", "St. John", email = "cstjohn810@protonmail.com", role = c("aut", "cre")))
 Maintainer: Chris St. John <cstjohn810@protonmail.com>
-Description: Wrapper to import and analyze data from Binance, Binance US, Coinbase, Coinbase Pro, Crypto.com, FTX, FTX US, Gemini, Kraken, and Kucoin.
-    There are also some import functions to work with Celsius data when manually exported.
+Description: Wrapper to import and analyze data from Binance, Binance US, Bitstamp, Coinbase, Coinbase Pro, Crypto.com, 
+    FTX, FTX US, Gemini, Huobi, Kraken, and Kucoin.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    caTools,
     dplyr,
-    digest,
-    here,
-    httr,
     httr2,
     jsonlite,
-    lubridate,
     magrittr,
-    RCurl,
-    reshape2,
-    stringr,
+    purrr,
     tibble
 RoxygenNote: 7.1.2

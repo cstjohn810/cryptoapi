@@ -20,9 +20,9 @@ crypto.com, ftx, ftx-us, gemini, huobi, kraken, and kucoin.}
 
 \item{quote_asset}{Quote asset (default USD)}
 
-\item{price_only}{If TRUE, only give current price as a numeric vector. If false, give all market data}
+\item{price_only}{If TRUE, only give current price as a numeric vector. If FALSE, give all market data available from API call.}
 
-\item{...}{Other parameters passed to API call}
+\item{...}{Query parameters passed to API call}
 }
 \value{
 
@@ -32,4 +32,16 @@ GET current public ticker price and market data
 }
 \examples{
 public_ticker_price("binance")
+public_ticker_price("binance")
+public_ticker_price("binance-us")
+public_ticker_price("bitstamp")
+public_ticker_price("coinbase")
+public_ticker_price("coinbase-pro")
+public_ticker_price("crypto.com")
+public_ticker_price("ftx")
+public_ticker_price("ftx-us")
+public_ticker_price("gemini")
+public_ticker_price("huobi")
+public_ticker_price("kraken")
+public_ticker_price("kucoin")
 }
