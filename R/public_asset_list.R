@@ -37,7 +37,7 @@ public_asset_list <- function(exchange) {
 
   if (exchange == "binance" | exchange == "binance-us") {
     resp$symbols %>%
-      purrr::map_df(magrittr::extract, "symbol")
+      purrr::map_dfr(magrittr::extract, "symbol")
 
   } else if (exchange == "bitstamp")  {
     resp %>%

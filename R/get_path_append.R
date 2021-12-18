@@ -7,7 +7,6 @@
 #'
 #' @return
 #'
-#' @examples
 get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL) {
   dplyr::case_when(
 
@@ -32,6 +31,15 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL)
     exchange == "huobi" & fn == "public_asset_list" ~ "v1/common/symbols",
     exchange == "kraken" & fn == "public_asset_list" ~ "public/Assets",
     exchange == "kucoin" & fn == "public_asset_list" ~ "api/v1/symbols",
+
+    (exchange == "binance" | exchange == "binance-us") & fn == "public_order_book" ~  "api/v1/ticker/bookTicker",
+    exchange == "bitstamp" & fn == "public_order_book" ~  paste0("order_book/", tolower(base_asset), tolower(quote_asset)),
+    exchange == "coinbase-pro" & fn == "public_order_book" ~  paste0("products/", base_asset, "-", quote_asset, "/book"),
+    exchange == "crypto.com" & fn == "public_order_book" ~  "public/get-book",
+    (exchange == "ftx" | exchange == "ftx-us") & fn == "public_order_book" ~ paste0("markets/", base_asset, "/", quote_asset),
+    exchange == "gemini" & fn == "public_order_book" ~ paste0("v1/book/", base_asset, quote_asset),
+    exchange == "kraken" & fn == "public_order_book" ~ "public/Depth",
+    exchange == "kucoin" & fn == "public_order_book" ~ "api/v1/market/orderbook/level2_100",
 
     TRUE ~ "Unsupported exchange or invalid entry"
   )

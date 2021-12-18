@@ -75,47 +75,53 @@ public_ticker_price <- function(exchange = "binance", base_asset = "BTC", quote_
     httr2::req_perform() %>%
     httr2::resp_body_json()
 
-  if(price_only == FALSE){
-    resp
+  # resp
 
-  } else if (exchange == "bitstamp") {
-    resp %>%
-      tibble::as_tibble() %>%
-      dplyr::pull(last) %>%
-      as.numeric()
+  if(price_only == FALSE) {
+    resp
 
   } else if (exchange == "binance" | exchange == "binance-us") {
     resp %>%
-      tibble::as_tibble() %>%
+      purrr::map_dfr(magrittr::extract) %>%
       dplyr::pull(price) %>%
       as.numeric()
 
-  } else if(exchange == "coinbase") {
-    resp$data$amount %>%
+  } else if (exchange == "bitstamp") {
+    resp %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::pull(last) %>%
       as.numeric()
 
-  } else if(exchange == "coinbase-pro") {
-    resp$price %>%
+  } else if (exchange == "coinbase") {
+    resp %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::pull(amount) %>%
       as.numeric()
 
-  } else if(exchange == "crypto.com") {
+  } else if (exchange == "coinbase-pro") {
+    resp %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::pull(price) %>%
+      as.numeric()
+
+  } else if (exchange == "crypto.com") {
     resp$result$data$a
 
-  } else if(exchange == "ftx" | exchange == "ftx-us") {
+  } else if (exchange == "ftx" | exchange == "ftx-us") {
     resp$result$price
 
-  } else if(exchange == "gemini") {
+  } else if (exchange == "gemini") {
     resp$close %>%
       as.numeric()
 
-  } else if(exchange == "huobi") {
+  } else if (exchange == "huobi") {
     resp$tick$data[[1]]$price
 
-  } else if(exchange == "kraken") {
-    resp$result$XXBTZUSD$p[[1]] %>%
+  } else if (exchange == "kraken") {
+    resp$result[[1]]$p[1] %>%
       as.numeric()
 
-  } else if(exchange == "kucoin") {
+  } else if (exchange == "kucoin") {
     resp$data$price %>%
       as.numeric()
 

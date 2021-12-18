@@ -7,8 +7,8 @@
 get_base_url <- function(exchange) {
   dplyr::case_when(
     exchange == "binance" ~  "https://api.binance.com",
-    exchange == "bitstamp" ~  "https://www.bitstamp.net/api/v2",
     exchange == "binance-us" ~ "https://api.binance.us",
+    exchange == "bitstamp" ~  "https://www.bitstamp.net/api/v2",
     exchange == "coinbase" ~  "https://api.coinbase.com/v2",
     exchange == "coinbase-pro" ~  "https://api.exchange.coinbase.com",
     exchange == "crypto.com" ~  "https://api.crypto.com/v2",

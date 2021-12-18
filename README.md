@@ -22,13 +22,13 @@ devtools::install_github("cstjohn810/cryptoapi")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example:
 
 ``` r
 library(cryptoapi)
 library(magrittr)
 public_ticker_price()
-#> [1] 46012.71
+#> [1] 46012.48
 ```
 
 ``` r
@@ -47,4 +47,12 @@ public_asset_list(exchange = "binance")
 #>  9 BCCBTC 
 #> 10 GASBTC 
 #> # ... with 1,836 more rows
+```
+
+``` r
+public_order_book()
+#> # A tibble: 1 x 5
+#>   symbol  bidPrice       bidQty     askPrice       askQty    
+#>   <chr>   <chr>          <chr>      <chr>          <chr>     
+#> 1 BTCUSDT 46010.85000000 0.10618000 46010.86000000 0.03208000
 ```

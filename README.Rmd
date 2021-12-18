@@ -31,7 +31,7 @@ devtools::install_github("cstjohn810/cryptoapi")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example:
 
 ```{r example}
 library(cryptoapi)
@@ -41,5 +41,9 @@ public_ticker_price()
 
 ```{r}
 public_asset_list(exchange = "binance")
+```
+
+```{r}
+public_order_book()
 ```
 
