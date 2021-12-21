@@ -4,6 +4,7 @@
 #' @param fn Which function needs a path append
 #' @param base_asset Base asset
 #' @param quote_asset Quote asset
+#' @param time_frame Time frame
 #'
 #' @return
 #'

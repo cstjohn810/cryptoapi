@@ -4,7 +4,13 @@
 \alias{get_path_append}
 \title{Lookup function for REST API URL path appends}
 \usage{
-get_path_append(exchange, fn, base_asset = NULL, quote_asset = NULL)
+get_path_append(
+  exchange,
+  fn,
+  base_asset = NULL,
+  quote_asset = NULL,
+  time_frame = NULL
+)
 }
 \arguments{
 \item{exchange}{Which exchange}
@@ -14,6 +20,8 @@ get_path_append(exchange, fn, base_asset = NULL, quote_asset = NULL)
 \item{base_asset}{Base asset}
 
 \item{quote_asset}{Quote asset}
+
+\item{time_frame}{Time frame}
 }
 \value{
 

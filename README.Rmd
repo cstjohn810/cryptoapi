@@ -47,5 +47,6 @@ public_asset_list(exchange = "binance")
 
 ```{r}
 public_order_book()
+
 ```
 
