@@ -1,4 +1,4 @@
-public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", price_only = TRUE, ...) {
+public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", ..., time_frame = NULL) {
 
   exchange <- tolower(exchange)
 
@@ -10,7 +10,7 @@ public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset
     "USD"
   }
 
-  path_append <- get_path_append(exchange, "public_candles", base_asset, quote_asset)
+  path_append <- get_path_append(exchange, "public_candles", base_asset, quote_asset, time_frame)
 
   query_params <- if(exchange == "binance" | exchange == "binance-us") {
     list(
@@ -45,16 +45,13 @@ public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset
     httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
     httr2::req_url_path_append(path_append) %>%
     httr2::req_url_query(!!!query_params) %>%
-    # httr2::req_dry_run()
-    httr2::req_perform() %>%
-    httr2::resp_body_json()
+    httr2::req_dry_run()
+  # httr2::req_perform() %>%
+  # httr2::resp_body_json()
 
   resp
 
-  # if(price_only == FALSE) {
-  #   resp
-  #
-  # } else if (exchange == "binance" | exchange == "binance-us") {
+  # if (exchange == "binance" | exchange == "binance-us") {
   #   resp %>%
   #     purrr::map_dfr(magrittr::extract) %>%
   #     dplyr::pull(price) %>%
