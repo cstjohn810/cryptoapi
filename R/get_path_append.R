@@ -5,10 +5,13 @@
 #' @param base_asset Base asset
 #' @param quote_asset Quote asset
 #' @param time_frame Time frame
+#' @param candle_type Candle type
 #'
 #' @return
 #'
-get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL, time_frame = NULL) {
+get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL, time_frame = NULL, candle_type = NULL) {
+
+
   dplyr::case_when(
 
     (exchange == "binance" | exchange == "binance-us") & fn == "public_ticker_price" ~  "api/v3/ticker/price",
@@ -45,6 +48,7 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
 
     (exchange == "binance" | exchange == "binance-us") & fn == "public_candles" ~  "api/v3/klines",
     exchange == "bitstamp" & fn == "public_candles" ~  paste0("ohlc/", tolower(base_asset), tolower(quote_asset)),
+    exchange == "bittrex" & fn == "public_candles" ~ paste0("markets/", base_asset, "-", quote_asset, "/candles/", candle_type, time_frame, "/recent"),
     exchange == "coinbase-pro" & fn == "public_candles" ~  paste0("products/", base_asset, "-", quote_asset, "/candles"),
     exchange == "crypto.com" & fn == "public_candles" ~  "public/get-candlestick",
     (exchange == "ftx" | exchange == "ftx-us") & fn == "public_candles" ~ paste0("markets/", base_asset, "/", quote_asset, "/candles"),
@@ -52,6 +56,7 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
     exchange == "huobi" & fn == "public_candles" ~ "market/history/kline",
     exchange == "kraken" & fn == "public_candles" ~ "public/OHLC",
     exchange == "kucoin" & fn == "public_candles" ~ "api/v1/market/candles",
+    exchange == "poloniex" & fn == "public_candles" ~ "public",
 
     (exchange == "binance" | exchange == "binance-us") & fn == "public_trades" ~  "api/v3/trades",
     exchange == "bitstamp" & fn == "public_trades" ~  paste0("transactions/", tolower(base_asset), tolower(quote_asset)),

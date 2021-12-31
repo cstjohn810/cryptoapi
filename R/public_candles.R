@@ -12,14 +12,26 @@
 #'               Possible options are "1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d", "3d", "1w", "1M"
 #'         \item Required for "bitstamp". Timeframe in seconds.
 #'               Possible options are 60, 180, 300, 900, 1800, 3600, 7200, 14400, 21600, 43200, 86400, 259200
+#'         \item Required for "bittrex". Desired time interval between candles
+#'               Options: "MINUTE_1", "MINUTE_5", "HOUR_1", "DAY_1"
 #'         \item Optional for "coinbase-pro".
 #'               Possible options are 60, 300, 900, 3600, 21600, 86400. Default 60.
-#'               These values correspond to timeslices representing one minute, five minutes,
+#'               These values correspond to time slices representing one minute, five minutes,
 #'               fifteen minutes, one hour, six hours, and one day, respectively.
 #'         \item Required for "crypto.com".
 #'               Period can be "1m", "5m", "15m", "30m", "1h", "4h", "6h", "12h", "1D", "7D", "14D", or "1M"
 #'         \item Required for "ftx" and "ftx-us". Window length in seconds.
 #'               Options: 15, 60, 300, 900, 3600, 14400, 86400, or any multiple of 86400 up to 30*86400
+#'         \item Required for "gemini".
+#'               Options: "1m", "5m", "15m", "30m", "1hr", "6hr", "1day".
+#'         \item Required for "huobi".
+#'               Options: "1min", "5min", "15min", "30min", "60min", "4hour", "1day", "1mon", "1week", "1year".
+#'         \item Optional for "kraken". Time frame interval in minutes. Default 1.
+#'               Options: 1, 5, 15, 30, 60, 240, 1440, 10080, 21600.
+#'         \item Required for "kucoin".
+#'               Options: "1min", "3min", "5min", "15min", "30min", "1hour", "2hour", "4hour", "6hour", "8hour", "12hour", "1day", "1week".
+#'         \item Required for "poloniex". Candlestick period in seconds
+#'               Options: 300, 900, 1800, 7200, 14400, 86400.
 #'        }
 #' @param start_time Parameter used for chart beginning time.
 #'        \itemize{
@@ -30,6 +42,9 @@
 #'               If either one of the start or end fields are not provided then both fields will be ignored.
 #'               If a custom time range is not declared then one ending now is selected.
 #'         \item Optional for "ftx" and "ftx-us". Must specify both start_time and end_time for historical prices.
+#'         \item Optional for "kucoin". For each query, the system would return at most 1500 pieces of data.
+#'               To obtain more data, please page the data by time.
+#'         \item Required for "poloniex". The start of the window in seconds since the unix epoch.
 #'         }
 #' @param end_time Parameter used for chart end time.
 #'        \itemize{
@@ -40,34 +55,52 @@
 #'               If either one of the start or end fields are not provided then both fields will be ignored.
 #'               If a custom time range is not declared then one ending now is selected.
 #'         \item Optional for "ftx" and "ftx-us". Must specify both start_time and end_time for historical prices.
+#'         \item Optional for "kucoin". For each query, the system would return at most 1500 pieces of data.
+#'               To obtain more data, please page the data by time.
+#'         \item Required for "poloniex". The end of the window in seconds since the unix epoch.
 #'         }
 #' @param limit Parameter used to limit number of candles.
 #'        \itemize{
-#'         \item Optional for "binance" and "binance-us". Default 500; max 1000.
-#'         \item Required for "bitstamp". Minimum: 1; maximum: 1000
+#'         \item Optional for "binance" and "binance-us". Default: 500; Maximum: 1000.
+#'         \item Required for "bitstamp". Minimum: 1; Maximum: 1000
+#'         \item Optional for "huobi". Default: 150; Minimum: 1; Maximum: 2000.
+#'         }
+#' @param candle_type Type of candles.
+#'        \itemize{
+#'         \item Optional for "bittrex". This portion of the url may be omitted if trade based candles are desired.
+#'               Options: "TRADE" or "MIDPOINT"
 #'         }
 #' @return
 #' @export
 #'
-#' @examples public_candles("binance", time_frame = "1m")
-#' @examples public_candles("bitstamp", time_frame = 60, limit = 1)
-#' @examples public_candles("coinbase-pro")
-#' @examples public_candles("ftx", time_frame = 60)
-#' @examples public_candles("ftx-us", time_frame = 60)
+#' @examples
+#' public_candles("binance", time_frame = "1m")
+#' public_candles("bittrex", time_frame = "MINUTE_1")
+#' public_candles("bitstamp", time_frame = 60, limit = 1)
+#' public_candles("coinbase-pro")
+#' public_candles("ftx", time_frame = 60)
+#' public_candles("ftx-us", time_frame = 60)
+#' public_candles("gemini", time_frame = "1m")
+#' public_candles("huobi", time_frame = "1min")
+#' public_candles("kraken")
+#' public_candles("kucoin", time_frame = "1min")
+#' public_candles("poloniex", time_frame = 300, start_time = 1546300800, end_time = 1546646400)
 public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", ..., time_frame = NULL,
-                           start_time = NULL, end_time = NULL, limit = NULL) {
+                           start_time = NULL, end_time = NULL, limit = NULL, candle_type = NULL) {
 
   exchange <- tolower(exchange)
 
-  no_usd_exchanges <- c("binance", "crypto.com", "huobi", "kucoin")
+  no_usd_exchanges <- c("binance", "crypto.com", "huobi", "kucoin", "poloniex")
 
   quote_asset <- if(exchange %in% no_usd_exchanges & quote_asset == "USD") {
     "USDT"
   } else {
-    "USD"
+    quote_asset
   }
 
-  path_append <- get_path_append(exchange, "public_candles", base_asset, quote_asset, time_frame)
+  candle_type <- if(is.null(candle_type)) NULL else(paste0(candle_type, "/"))
+
+  path_append <- get_path_append(exchange, "public_candles", base_asset, quote_asset, time_frame, candle_type)
 
   query_params <- if(exchange == "binance" | exchange == "binance-us") {
     list(
@@ -86,6 +119,7 @@ public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset
       step = time_frame,
       limit = limit
     )
+
   } else if(exchange == "coinbase-pro") {
     list(
       ...,
@@ -109,21 +143,37 @@ public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset
   } else if(exchange == "huobi") {
     list(
       ...,
-      symbol = paste0(tolower(base_asset), tolower(quote_asset))
+      symbol = paste0(tolower(base_asset), tolower(quote_asset)),
+      period = time_frame,
+      size = limit
     )
   } else if(exchange == "kraken") {
     list(
       ...,
-      pair = paste0(base_asset, quote_asset)
+      pair = paste0(base_asset, quote_asset),
+      interval = time_frame,
+      since = start_time
     )
-  } else if(exchange == "kucoin")
+  } else if(exchange == "kucoin") {
     list(
       ...,
-      symbol = paste0(toupper(base_asset), "-", toupper(quote_asset))
+      symbol = paste0(toupper(base_asset), "-", toupper(quote_asset)),
+      startAt = start_time,
+      endAt = end_time,
+      type = time_frame
     )
-  else {
+  } else if(exchange == "poloniex") {
+    list(
+      ...,
+      command = "returnChartData",
+      currencyPair = paste0(toupper(quote_asset), "_", toupper(base_asset)),
+      start = start_time,
+      end = end_time,
+      period = time_frame
+    )
+  } else {
     NULL
-  }
+    }
 
   resp <- httr2::request(get_base_url(exchange)) %>%
     httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
