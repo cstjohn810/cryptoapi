@@ -14,8 +14,8 @@ public_order_book(
 )
 }
 \arguments{
-\item{exchange}{Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "coinbase-pro",
-"crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", and "kucoin".}
+\item{exchange}{Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase-pro",
+"crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".}
 
 \item{base_asset}{Base asset (default BTC)}
 
@@ -54,11 +54,13 @@ public_order_book(
 \item{depth}{Optional parameter used to specify number of bids and asks to return.
 \itemize{
   \item Default for "binance" and "binance-us" is 100. Valid limits of 5, 10, 20, 50, 100, 500, 1000, 5000.
+  \item Default for "bittrex" is 25. Allowed values are 1, 25, 500.
   \item Default for "crypto.com" is max of 150.
   \item Default for "ftx" and "ftx-us" is 20 with max of 100.
   \item Default for "gemini" is 50. May be 0 to return the full order book.
   \item Default for "huobi" is 20, unless type is set to "step0". Valid limits of 5, 10, 20.
   \item Default for "kraken" is 100 with max of 500.
+  \item Default for "poloniex" is 50 with max of 100.
 }}
 }
 \value{
@@ -71,6 +73,7 @@ GET current public order book data
 public_order_book(exchange = "binance")
 public_order_book(exchange = "binance-us")
 public_order_book(exchange = "bitstamp")
+public_order_book(exchange = "bittrex")
 public_order_book(exchange = "coinbase-pro")
 public_order_book(exchange = "crypto.com")
 public_order_book(exchange = "ftx")
@@ -79,4 +82,5 @@ public_order_book(exchange = "gemini")
 public_order_book(exchange = "huobi", level = "step0")
 public_order_book(exchange = "kraken")
 public_order_book(exchange = "kucoin")
+public_order_book(exchange = "poloniex")
 }

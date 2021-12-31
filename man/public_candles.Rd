@@ -12,13 +12,14 @@ public_candles(
   time_frame = NULL,
   start_time = NULL,
   end_time = NULL,
-  limit = NULL
+  limit = NULL,
+  candle_type = NULL
 )
 }
 \arguments{
 \item{exchange}{Which exchange to use for price and market data.
-Choices are "binance", "binance-us", "bitstamp", "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini",
-"huobi", "kraken", and "kucoin".}
+Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini",
+"huobi", "kraken","kucoin", and "poloniex".}
 
 \item{base_asset}{Base asset (default "BTC")}
 
@@ -32,14 +33,26 @@ Choices are "binance", "binance-us", "bitstamp", "coinbase-pro", "crypto.com", "
        Possible options are "1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d", "3d", "1w", "1M"
  \item Required for "bitstamp". Timeframe in seconds.
        Possible options are 60, 180, 300, 900, 1800, 3600, 7200, 14400, 21600, 43200, 86400, 259200
+ \item Required for "bittrex". Desired time interval between candles
+       Options: "MINUTE_1", "MINUTE_5", "HOUR_1", "DAY_1"
  \item Optional for "coinbase-pro".
        Possible options are 60, 300, 900, 3600, 21600, 86400. Default 60.
-       These values correspond to timeslices representing one minute, five minutes,
+       These values correspond to time slices representing one minute, five minutes,
        fifteen minutes, one hour, six hours, and one day, respectively.
  \item Required for "crypto.com".
        Period can be "1m", "5m", "15m", "30m", "1h", "4h", "6h", "12h", "1D", "7D", "14D", or "1M"
  \item Required for "ftx" and "ftx-us". Window length in seconds.
        Options: 15, 60, 300, 900, 3600, 14400, 86400, or any multiple of 86400 up to 30*86400
+ \item Required for "gemini".
+       Options: "1m", "5m", "15m", "30m", "1hr", "6hr", "1day".
+ \item Required for "huobi".
+       Options: "1min", "5min", "15min", "30min", "60min", "4hour", "1day", "1mon", "1week", "1year".
+ \item Optional for "kraken". Time frame interval in minutes. Default 1.
+       Options: 1, 5, 15, 30, 60, 240, 1440, 10080, 21600.
+ \item Required for "kucoin".
+       Options: "1min", "3min", "5min", "15min", "30min", "1hour", "2hour", "4hour", "6hour", "8hour", "12hour", "1day", "1week".
+ \item Required for "poloniex". Candlestick period in seconds
+       Options: 300, 900, 1800, 7200, 14400, 86400.
 }}
 
 \item{start_time}{Parameter used for chart beginning time.
@@ -51,6 +64,9 @@ Choices are "binance", "binance-us", "bitstamp", "coinbase-pro", "crypto.com", "
        If either one of the start or end fields are not provided then both fields will be ignored.
        If a custom time range is not declared then one ending now is selected.
  \item Optional for "ftx" and "ftx-us". Must specify both start_time and end_time for historical prices.
+ \item Optional for "kucoin". For each query, the system would return at most 1500 pieces of data.
+       To obtain more data, please page the data by time.
+ \item Required for "poloniex". The start of the window in seconds since the unix epoch.
  }}
 
 \item{end_time}{Parameter used for chart end time.
@@ -62,12 +78,22 @@ Choices are "binance", "binance-us", "bitstamp", "coinbase-pro", "crypto.com", "
        If either one of the start or end fields are not provided then both fields will be ignored.
        If a custom time range is not declared then one ending now is selected.
  \item Optional for "ftx" and "ftx-us". Must specify both start_time and end_time for historical prices.
+ \item Optional for "kucoin". For each query, the system would return at most 1500 pieces of data.
+       To obtain more data, please page the data by time.
+ \item Required for "poloniex". The end of the window in seconds since the unix epoch.
  }}
 
 \item{limit}{Parameter used to limit number of candles.
 \itemize{
- \item Optional for "binance" and "binance-us". Default 500; max 1000.
- \item Required for "bitstamp". Minimum: 1; maximum: 1000
+ \item Optional for "binance" and "binance-us". Default: 500; Maximum: 1000.
+ \item Required for "bitstamp". Minimum: 1; Maximum: 1000
+ \item Optional for "huobi". Default: 150; Minimum: 1; Maximum: 2000.
+ }}
+
+\item{candle_type}{Type of candles.
+\itemize{
+ \item Optional for "bittrex". This portion of the url may be omitted if trade based candles are desired.
+       Options: "TRADE" or "MIDPOINT"
  }}
 }
 \value{
@@ -79,7 +105,13 @@ GET Candlestick/Kline/OHLC data
 \examples{
 public_candles("binance", time_frame = "1m")
 public_candles("bitstamp", time_frame = 60, limit = 1)
+public_candles("bittrex", time_frame = "MINUTE_1")
 public_candles("coinbase-pro")
 public_candles("ftx", time_frame = 60)
 public_candles("ftx-us", time_frame = 60)
+public_candles("gemini", time_frame = "1m")
+public_candles("huobi", time_frame = "1min")
+public_candles("kraken")
+public_candles("kucoin", time_frame = "1min")
+public_candles("poloniex", time_frame = 300, start_time = 1546300800, end_time = 1546646400)
 }

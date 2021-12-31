@@ -4,11 +4,13 @@
 \alias{public_asset_list}
 \title{GET asset list for each exchange}
 \usage{
-public_asset_list(exchange)
+public_asset_list(exchange, ...)
 }
 \arguments{
-\item{exchange}{Which exchange to use for list and market data. Choices are "binance", "binance-us", "bitstamp", "coinbase",
-"coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", and "kucoin".}
+\item{exchange}{Which exchange to use for list and market data. Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase",
+"coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".}
+
+\item{...}{Query parameters passed to API call}
 }
 \value{
 
@@ -18,10 +20,9 @@ GET asset list for each exchange
 }
 \examples{
 public_asset_list("binance")
-public_asset_list("binance")
-public_asset_list("binance")
 public_asset_list("binance-us")
 public_asset_list("bitstamp")
+public_asset_list("bittrex")
 public_asset_list("coinbase")
 public_asset_list("coinbase-pro")
 public_asset_list("crypto.com")
@@ -31,4 +32,5 @@ public_asset_list("gemini")
 public_asset_list("huobi")
 public_asset_list("kraken")
 public_asset_list("kucoin")
+public_asset_list("poloniex")
 }

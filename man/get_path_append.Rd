@@ -9,7 +9,8 @@ get_path_append(
   fn,
   base_asset = NULL,
   quote_asset = NULL,
-  time_frame = NULL
+  time_frame = NULL,
+  candle_type = NULL
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ get_path_append(
 \item{quote_asset}{Quote asset}
 
 \item{time_frame}{Time frame}
+
+\item{candle_type}{Candle type}
 }
 \value{
 

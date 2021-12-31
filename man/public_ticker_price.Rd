@@ -13,8 +13,8 @@ public_ticker_price(
 )
 }
 \arguments{
-\item{exchange}{Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "coinbase",
-"coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", and "kucoin".}
+\item{exchange}{Which exchange to use for price and market data. Choices are "binance", "binance-us", "bittrex", bitstamp", "coinbase",
+"coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".}
 
 \item{base_asset}{Base asset (default BTC)}
 
@@ -35,6 +35,7 @@ public_ticker_price("binance")
 public_ticker_price("binance")
 public_ticker_price("binance-us")
 public_ticker_price("bitstamp")
+public_ticker_price("bittrex")
 public_ticker_price("coinbase")
 public_ticker_price("coinbase-pro")
 public_ticker_price("crypto.com")
@@ -44,4 +45,5 @@ public_ticker_price("gemini")
 public_ticker_price("huobi")
 public_ticker_price("kraken")
 public_ticker_price("kucoin")
+public_ticker_price("poloniex")
 }

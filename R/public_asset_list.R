@@ -2,6 +2,7 @@
 #'
 #' @param exchange Which exchange to use for list and market data. Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase",
 #'        "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".
+#' @param ... Query parameters passed to API call
 #'
 #' @return
 #' @export

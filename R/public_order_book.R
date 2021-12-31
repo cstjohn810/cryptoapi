@@ -174,11 +174,13 @@ public_order_book <- function(exchange = "binance", base_asset = "BTC", quote_as
       dplyr::select(bids_price = bids.rate, bids_qty = bids.quantity, asks_price = asks.rate, asks_qty = asks.quantity)
 
   } else if(exchange == "coinbase-pro") {
-    tibble::tibble(bids = resp$bids,
-                   asks = resp$asks) %>%
+    resp_len <- min(length(resp$bids), length(resp$asks))
+
+    tibble::tibble(bids = resp$bids[1:resp_len],
+                   asks = resp$asks[1:resp_len]) %>%
       tidyr::unnest_wider(col = bids, names_sep = ".") %>%
       tidyr::unnest_wider(col = asks, names_sep = ".") %>%
-      dplyr::select(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
+      dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
 
   } else if(exchange == "crypto.com") {
 

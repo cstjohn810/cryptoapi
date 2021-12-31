@@ -29,42 +29,169 @@ This is a basic example:
 ``` r
 library(cryptoapi)
 library(magrittr)
-public_ticker_price()
-#> [1] 47189.03
 ```
 
-``` r
-public_asset_list(exchange = "binance")
-#> # A tibble: 1,869 x 1
-#>    symbol 
-#>    <chr>  
-#>  1 ETHBTC 
-#>  2 LTCBTC 
-#>  3 BNBBTC 
-#>  4 NEOBTC 
-#>  5 QTUMETH
-#>  6 EOSETH 
-#>  7 SNTETH 
-#>  8 BNTETH 
-#>  9 BCCBTC 
-#> 10 GASBTC 
-#> # ... with 1,859 more rows
-```
+Can pull out the current ticker price of any asset from any exchange:
 
 ``` r
-public_order_book()
-#> # A tibble: 100 x 4
-#>    bids_price     bids_qty   asks_price     asks_qty  
-#>    <chr>          <chr>      <chr>          <chr>     
-#>  1 47192.44000000 1.02284000 47192.45000000 0.50542000
-#>  2 47190.75000000 0.05297000 47192.80000000 0.00216000
-#>  3 47189.41000000 0.11654000 47192.81000000 0.03000000
-#>  4 47189.04000000 0.07291000 47193.90000000 0.01100000
-#>  5 47189.03000000 0.38001000 47195.28000000 0.05297000
-#>  6 47189.02000000 0.44093000 47196.13000000 0.00532000
-#>  7 47189.01000000 0.19394000 47197.55000000 0.30356000
-#>  8 47187.11000000 0.06924000 47198.37000000 0.16790000
-#>  9 47187.10000000 0.07385000 47198.38000000 0.02119000
-#> 10 47183.46000000 0.08264000 47198.45000000 0.34999000
-#> # ... with 90 more rows
+public_ticker_price(exchange = "binance", base_asset = "BTC", quote_asset = "USD")
+#> [1] 46346.36
+```
+
+Alternatively, get extra price information by toggling the price\_only
+option:
+
+``` r
+public_ticker_price(exchange = "ftx", base_asset = "BTC", quote_asset = "USD", price_only = FALSE)
+#> $success
+#> [1] TRUE
+#> 
+#> $result
+#> $result$name
+#> [1] "BTC/USD"
+#> 
+#> $result$enabled
+#> [1] TRUE
+#> 
+#> $result$postOnly
+#> [1] FALSE
+#> 
+#> $result$priceIncrement
+#> [1] 1
+#> 
+#> $result$sizeIncrement
+#> [1] 0.0001
+#> 
+#> $result$minProvideSize
+#> [1] 0.0001
+#> 
+#> $result$last
+#> [1] 46355
+#> 
+#> $result$bid
+#> [1] 46352
+#> 
+#> $result$ask
+#> [1] 46353
+#> 
+#> $result$price
+#> [1] 46353
+#> 
+#> $result$type
+#> [1] "spot"
+#> 
+#> $result$baseCurrency
+#> [1] "BTC"
+#> 
+#> $result$quoteCurrency
+#> [1] "USD"
+#> 
+#> $result$underlying
+#> NULL
+#> 
+#> $result$restricted
+#> [1] FALSE
+#> 
+#> $result$highLeverageFeeExempt
+#> [1] TRUE
+#> 
+#> $result$change1h
+#> [1] 0.009726291
+#> 
+#> $result$change24h
+#> [1] -0.01817373
+#> 
+#> $result$changeBod
+#> [1] -0.01823612
+#> 
+#> $result$quoteVolume24h
+#> [1] 546828689
+#> 
+#> $result$volumeUsd24h
+#> [1] 546828689
+```
+
+If necessary, find the available assets for any exchange:
+
+``` r
+public_asset_list(exchange = "crypto.com")
+#> # A tibble: 264 x 1
+#>    instrument_name
+#>    <chr>          
+#>  1 RSR_USDT       
+#>  2 PERP_USDT      
+#>  3 MATIC_BTC      
+#>  4 SHIB_USDC      
+#>  5 SHIB_USDT      
+#>  6 GRT_CRO        
+#>  7 QI_USDT        
+#>  8 HOD_USDT       
+#>  9 VET_BTC        
+#> 10 VET_CRO        
+#> # ... with 254 more rows
+```
+
+View order book for varying depths:
+
+``` r
+public_order_book(exchange = "coinbase-pro", level = 2)
+#> # A tibble: 15,459 x 6
+#>    bids_price bids_qty   bids.3 asks_price asks_qty   asks.3
+#>    <chr>      <chr>       <int> <chr>      <chr>       <int>
+#>  1 46358.61   0.01864899      1 46360.68   0.01612281      1
+#>  2 46358.6    0.04297742      1 46362.03   0.25891967      1
+#>  3 46358.43   0.1             1 46362.79   0.01864899      1
+#>  4 46358.31   0.0005          1 46362.8    0.05            1
+#>  5 46358.3    0.00081085      1 46362.81   0.02105         1
+#>  6 46358.26   0.0005          1 46363.86   0.001           1
+#>  7 46358.21   0.0005          1 46363.88   0.153013        1
+#>  8 46352.68   0.00006359      1 46364.34   0.00206456      1
+#>  9 46350.56   0.45867155      2 46365.75   0.01589         1
+#> 10 46350.5    0.031           1 46367.07   0.05393087      1
+#> # ... with 15,449 more rows
+```
+
+View candle information (OHLC):
+
+``` r
+public_candles("gemini", time_frame = "1m") %>% 
+  head(1)
+#> [[1]]
+#> [[1]][[1]]
+#> [1] 1640989920000
+#> 
+#> [[1]][[2]]
+#> [1] 46382.89
+#> 
+#> [[1]][[3]]
+#> [1] 46382.89
+#> 
+#> [[1]][[4]]
+#> [1] 46370.9
+#> 
+#> [[1]][[5]]
+#> [1] 46370.9
+#> 
+#> [[1]][[6]]
+#> [1] 0.05564079
+```
+
+View recent trades:
+
+``` r
+public_trades(exchange = "kraken")
+#> # A tibble: 1,000 x 6
+#>    price       volume            time side  type  misc 
+#>    <chr>       <chr>            <dbl> <chr> <chr> <chr>
+#>  1 46431.70000 0.10080865 1640986653. b     m     ""   
+#>  2 46433.00000 0.08800000 1640986653. b     m     ""   
+#>  3 46434.90000 0.00039558 1640986653. b     m     ""   
+#>  4 46437.70000 0.08800000 1640986653. b     m     ""   
+#>  5 46439.80000 0.25000000 1640986653. b     m     ""   
+#>  6 46442.40000 0.08800000 1640986653. b     m     ""   
+#>  7 46442.50000 0.89883832 1640986653. b     m     ""   
+#>  8 46442.50000 3.41132380 1640986653. b     m     ""   
+#>  9 46443.00000 0.14599130 1640986653. b     m     ""   
+#> 10 46443.00000 0.00500000 1640986653. b     m     ""   
+#> # ... with 990 more rows
 ```
