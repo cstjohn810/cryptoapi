@@ -78,6 +78,7 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
 
     # (exchange == "binance" | exchange == "binance-us") & fn == "public_asset_info" ~  "api/v1/ticker/bookTicker",
     # exchange == "bitstamp" & fn == "public_asset_info" ~  paste0("asset_info/", tolower(base_asset), tolower(quote_asset)),
+    exchange == "bittrex" & fn == "public_asset_info" ~ "markets/summaries",
     # exchange == "coinbase" & fn == "_asset_info" ~  paste0("prices/", base_asset, "-", quote_asset, "/spot"),
     exchange == "coinbase-pro" & fn == "public_asset_info" ~  paste0("products/", base_asset, "-", quote_asset, "/stats"),
     # exchange == "crypto.com" & fn == "public_asset_info" ~  "public/get-book",
@@ -85,7 +86,7 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
     exchange == "gemini" & fn == "public_asset_info" ~ paste0("v1/symbols/details/", base_asset, quote_asset),
     # exchange == "huobi" & fn == "public_asset_info" ~ "v1/common/symbols",
     # exchange == "kraken" & fn == "public_asset_info" ~ "public/Depth",
-    exchange == "kucoin" & fn == "public_asset_info" ~ paste0("api/v2/currencies", base_asset),
+    exchange == "kucoin" & fn == "public_asset_info" ~ paste0("api/v2/currencies/", base_asset),
 
     TRUE ~ "Unsupported exchange or invalid entry"
   )

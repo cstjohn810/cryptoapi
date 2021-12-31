@@ -76,4 +76,9 @@ View recent trades:
 ```{r}
 public_trades(exchange = "kraken")
 ```
+View additional asset information:
+
+```{r}
+public_asset_info("gemini")
+```
 
