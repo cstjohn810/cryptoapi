@@ -1,8 +1,8 @@
 #' GET Candlestick/Kline/OHLC data
 #'
 #' @param exchange Which exchange to use for price and market data.
-#'        Choices are "binance", "binance-us", "bitstamp", "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini",
-#'        "huobi", "kraken", and "kucoin".
+#'        Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini",
+#'        "huobi", "kraken","kucoin", and "poloniex".
 #' @param base_asset Base asset (default "BTC")
 #' @param quote_asset Quote asset (default "USD")
 #' @param ... Query parameters passed to API call
@@ -75,8 +75,8 @@
 #'
 #' @examples
 #' public_candles("binance", time_frame = "1m")
-#' public_candles("bittrex", time_frame = "MINUTE_1")
 #' public_candles("bitstamp", time_frame = 60, limit = 1)
+#' public_candles("bittrex", time_frame = "MINUTE_1")
 #' public_candles("coinbase-pro")
 #' public_candles("ftx", time_frame = 60)
 #' public_candles("ftx-us", time_frame = 60)

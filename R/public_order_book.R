@@ -1,7 +1,7 @@
 #' GET current public order book data
 #'
-#' @param exchange Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "coinbase-pro",
-#'        "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", and "kucoin".
+#' @param exchange Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase-pro",
+#'        "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".
 #' @param base_asset Base asset (default BTC)
 #' @param quote_asset Quote asset (default USD)
 #' @param ... Query parameters passed to API call
@@ -35,38 +35,42 @@
 #' @param depth Optional parameter used to specify number of bids and asks to return.
 #'        \itemize{
 #'          \item Default for "binance" and "binance-us" is 100. Valid limits of 5, 10, 20, 50, 100, 500, 1000, 5000.
+#'          \item Default for "bittrex" is 25. Allowed values are 1, 25, 500.
 #'          \item Default for "crypto.com" is max of 150.
 #'          \item Default for "ftx" and "ftx-us" is 20 with max of 100.
 #'          \item Default for "gemini" is 50. May be 0 to return the full order book.
 #'          \item Default for "huobi" is 20, unless type is set to "step0". Valid limits of 5, 10, 20.
 #'          \item Default for "kraken" is 100 with max of 500.
+#'          \item Default for "poloniex" is 50 with max of 100.
 #'        }
 #'
 #' @return
 #' @export
 #'
 #' @examples public_order_book(exchange = "binance")
-#' @examples public_order_book(exchange = "binance-us")
-#' @examples public_order_book(exchange = "bitstamp")
-#' @examples public_order_book(exchange = "coinbase-pro")
-#' @examples public_order_book(exchange = "crypto.com")
-#' @examples public_order_book(exchange = "ftx")
-#' @examples public_order_book(exchange = "ftx-us")
-#' @examples public_order_book(exchange = "gemini")
-#' @examples public_order_book(exchange = "huobi", level = "step0")
-#' @examples public_order_book(exchange = "kraken")
-#' @examples public_order_book(exchange = "kucoin")
+#' public_order_book(exchange = "binance-us")
+#' public_order_book(exchange = "bitstamp")
+#' public_order_book(exchange = "bittrex")
+#' public_order_book(exchange = "coinbase-pro")
+#' public_order_book(exchange = "crypto.com")
+#' public_order_book(exchange = "ftx")
+#' public_order_book(exchange = "ftx-us")
+#' public_order_book(exchange = "gemini")
+#' public_order_book(exchange = "huobi", level = "step0")
+#' public_order_book(exchange = "kraken")
+#' public_order_book(exchange = "kucoin")
+#' public_order_book(exchange = "poloniex")
 public_order_book <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", ...,
                               level = NULL, depth = NULL) {
 
   exchange <- tolower(exchange)
 
-  no_usd_exchanges <- c("binance", "crypto.com", "huobi", "kucoin")
+  no_usd_exchanges <- c("binance", "crypto.com", "huobi", "kucoin", "poloniex")
 
   quote_asset <- if(exchange %in% no_usd_exchanges & quote_asset == "USD") {
     "USDT"
   } else {
-    "USD"
+    quote_asset
   }
 
   path_append <- get_path_append(exchange, "public_order_book", base_asset, quote_asset)
@@ -81,6 +85,11 @@ public_order_book <- function(exchange = "binance", base_asset = "BTC", quote_as
     list(
       ...,
       group = level
+    )
+  } else if(exchange == "bittrex") {
+    list(
+      ...,
+      depth = depth
     )
   } else if(exchange == "coinbase-pro") {
     list(
@@ -116,12 +125,19 @@ public_order_book <- function(exchange = "binance", base_asset = "BTC", quote_as
       pair = paste0(base_asset, quote_asset),
       count = depth
     )
-  } else if(exchange == "kucoin")
+  } else if(exchange == "kucoin") {
     list(
       ...,
       symbol = paste0(toupper(base_asset), "-", toupper(quote_asset))
     )
-  else {
+  } else if(exchange == "poloniex") {
+    list(
+      ...,
+      command = "returnOrderBook",
+      currencyPair = paste0(toupper(quote_asset), "_", toupper(base_asset)),
+      depth = depth
+    )
+  } else {
     NULL
   }
 
@@ -148,6 +164,14 @@ public_order_book <- function(exchange = "binance", base_asset = "BTC", quote_as
       tidyr::unnest_wider(col = bids, names_sep = ".") %>%
       tidyr::unnest_wider(col = asks, names_sep = ".") %>%
       dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
+
+  } else if (exchange == "bittrex") {
+
+    tibble::tibble(bids = resp$bid,
+                   asks = resp$ask) %>%
+      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
+      dplyr::select(bids_price = bids.rate, bids_qty = bids.quantity, asks_price = asks.rate, asks_qty = asks.quantity)
 
   } else if(exchange == "coinbase-pro") {
     tibble::tibble(bids = resp$bids,
@@ -198,6 +222,13 @@ public_order_book <- function(exchange = "binance", base_asset = "BTC", quote_as
   } else if(exchange == "kucoin") {
     tibble::tibble(bids = resp$data$bids,
                    asks = resp$data$asks) %>%
+      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
+      dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
+
+  } else if(exchange == "poloniex") {
+    tibble::tibble(bids = resp$bids,
+                   asks = resp$asks) %>%
       tidyr::unnest_wider(col = bids, names_sep = ".") %>%
       tidyr::unnest_wider(col = asks, names_sep = ".") %>%
       dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
