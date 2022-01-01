@@ -2,6 +2,7 @@
 #'
 #' @param exchange Which exchange to use for list and market data. Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase",
 #'        "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".
+#' @param dry_run If TRUE, call httr2::req_dry_run, which shows the API call without actually sending it.
 #' @param ... Query parameters passed to API call
 #'
 #' @return
@@ -21,7 +22,7 @@
 #' public_asset_list("kraken")
 #' public_asset_list("kucoin")
 #' public_asset_list("poloniex")
-public_asset_list <- function(exchange, ...) {
+public_asset_list <- function(exchange, dry_run = FALSE, ...) {
 
   exchange <- tolower(exchange)
 
@@ -31,15 +32,7 @@ public_asset_list <- function(exchange, ...) {
 
   query_params <- get_query_params(exchange, "public_asset_list")
 
-  resp <- httr2::request(base_url) %>%
-    httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
-    httr2::req_url_path_append(path_append) %>%
-    httr2::req_url_query(!!!query_params) %>%
-    # httr2::req_dry_run()
-    httr2::req_perform() %>%
-    httr2::resp_body_json()
-
-  # resp
+  resp <- get_api_response(base_url, path_append, query_params, dry_run)
 
   if (exchange == "binance" | exchange == "binance-us") {
     resp$symbols %>%

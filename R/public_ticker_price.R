@@ -47,38 +47,26 @@ public_ticker_price <- function(exchange = "binance", base_asset = "BTC", quote_
 
   resp <- get_api_response(base_url, path_append, query_params, dry_run)
 
+  # resp
+
   if(dry_run == TRUE) {
     resp
   } else if (price_only == FALSE) {
     resp
-  } else if (exchange == "binance" | exchange == "binance-us") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::pull(price) %>%
+  } else if (exchange == "binance" | exchange == "binance-us" | exchange == "coinbase-pro") {
+    resp$price %>%
       as.numeric()
 
   } else if (exchange == "bitstamp") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::pull(last) %>%
+    resp$last %>%
       as.numeric()
 
   } else if (exchange == "bittrex") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::pull(lastTradeRate) %>%
+    resp$lastTradeRate %>%
       as.numeric()
 
   } else if (exchange == "coinbase") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::pull(amount) %>%
-      as.numeric()
-
-  } else if (exchange == "coinbase-pro") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::pull(price) %>%
+    resp$data$amount %>%
       as.numeric()
 
   } else if (exchange == "crypto.com") {
@@ -104,7 +92,10 @@ public_ticker_price <- function(exchange = "binance", base_asset = "BTC", quote_
 
   } else if (exchange == "poloniex") {
     sub_list <- paste0(quote_asset, "_", base_asset)
-    resp[sub_list] %>% purrr::map_dfr(magrittr::extract) %>% dplyr::pull(last) %>% as.numeric()
+    resp[sub_list] %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::pull(last) %>%
+      as.numeric()
 
 
   } else {
