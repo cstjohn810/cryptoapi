@@ -9,11 +9,14 @@
 #' @return
 #' @export
 #'
+#'
 #' @examples
 #' public_asset_info("bittrex")
 #' public_asset_info("coinbase-pro")
 #' public_asset_info("gemini")
 #' public_asset_info("kucoin")
+#'
+#' @importFrom magrittr `%>%`
 public_asset_info <- function(exchange = "coinbase-pro", base_asset = "BTC", quote_asset = "USD", dry_run = FALSE) {
 
   exchange <- tolower(exchange)

@@ -7,6 +7,7 @@
 #'
 #' @return
 #'
+#' @importFrom magrittr `%>%`
 get_api_response <- function(base_url, path_append, query_params = NULL, dry_run = FALSE) {
   resp <- httr2::request(base_url) %>%
     httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%

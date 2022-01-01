@@ -120,66 +120,66 @@ get_tidy_resp <- function (exchange, fn, base_asset, quote_asset, resp) {
   }
 
   # public_asset_list ----
-  # else if ((exchange == "binance" | exchange == "binance-us") & fn == "public_ticker_price_addl") {
-  #   resp %>%
-  #     tibble::as_tibble() %>%
-  #     dplyr::mutate(price = as.numeric(price))
-  #
-  # } else if (exchange == "bitstamp" & fn == "public_ticker_price_addl") {
-  #   resp %>%
-  #     tibble::as_tibble() %>%
-  #     dplyr::mutate(dplyr::across(.cols = dplyr::everything(), .fns = as.numeric))
-  #
-  # } else if (exchange == "bittrex" & fn == "public_ticker_price_addl") {
-  #   resp %>%
-  #     tibble::as_tibble() %>%
-  #     dplyr::mutate(dplyr::across(.cols = 2:dplyr::last_col(), .fns = as.numeric))
-  #
-  # } else if (exchange == "coinbase" & fn == "public_ticker_price_addl") {
-  #   resp$data %>%
-  #     tibble::as_tibble() %>%
-  #     dplyr::mutate(amount = as.numeric(amount))
-  #
-  # } else if (exchange == "coinbase-pro" & fn == "public_ticker_price_addl") {
-  #   resp %>%
-  #     tibble::as_tibble() %>%
-  #     dplyr::mutate(dplyr::across(.cols = c(trade_id, price, size, bid, ask, volume), .fns = as.numeric)) %>%
-  #     dplyr::mutate(time = lubridate::as_datetime(time))
-  #
-  # } else if (exchange == "crypto.com" & fn == "public_ticker_price_addl") {
-  #   resp$result$data %>%
-  #     tibble::as_tibble() %>%
-  #     dplyr::select(instrument_name = i, best_bid = b, best_ask = k, last_price = a, timestamp = t, vol_24hr = v, high_24hr = h, low_24hr = l, change_24hr = c)
-  #
-  # } else if ((exchange == "ftx" | exchange == "ftx-us") & fn == "public_ticker_price_addl") {
-  #   resp$result %>%
-  #     purrr::compact() %>%
-  #     tibble::as_tibble()
-  #
-  # } else if (exchange == "gemini" & fn == "public_ticker_price_addl") {
-  #   resp %>%
-  #     tibble::as_tibble()
-  #
-  # } else if (exchange == "huobi" & fn == "public_ticker_price_addl") {
-  #   resp %>%
-  #     tibble::as_tibble()
-  #
-  # } else if (exchange == "kraken" & fn == "public_ticker_price_addl") {
-  #   resp$result %>%
-  #     tibble::as_tibble()
-  #
-  # } else if (exchange == "kucoin" & fn == "public_ticker_price_addl") {
-  #   resp$data %>%
-  #     tibble::as_tibble() %>%
-  #     dplyr::mutate(dplyr::across(.cols = dplyr::everything(), .fns = as.numeric))
-  #
-  # } else if (exchange == "poloniex" & fn == "public_ticker_price_addl") {
-  #   sub_list <- paste0(quote_asset, "_", base_asset)
-  #   resp[sub_list][[1]] %>%
-  #     tibble::as_tibble() %>%
-  #     dplyr::mutate(dplyr::across(.cols = dplyr::everything(), .fns = as.numeric))
-  #
-  # }
+  else if ((exchange == "binance" | exchange == "binance-us") & fn == "public_asset_list") {
+    resp$symbols %>%
+      purrr::map_dfr(magrittr::extract, 1:9)
+
+  } else if (exchange == "bitstamp" & fn == "public_asset_list")  {
+    resp %>%
+      purrr::map_dfr(magrittr::extract )%>%
+      tidyr::separate(name, sep = "/", into = c("base_asset", "quote_asset"))
+
+  } else if (exchange == "bittrex" & fn == "public_asset_list")  {
+    resp %>%
+      purrr::map_dfr(magrittr::extract, 1:7) %>%
+      dplyr::mutate(createdAt = lubridate::as_datetime(createdAt))
+
+  } else if(exchange == "coinbase" & fn == "public_asset_list") {
+    resp$data %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::mutate(min_size = as.numeric(min_size))
+
+  } else if(exchange == "coinbase-pro" & fn == "public_asset_list") {
+    resp %>%
+      purrr::map_dfr(magrittr::extract)
+
+  } else if(exchange == "crypto.com" & fn == "public_asset_list") {
+    resp$result$instruments %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::mutate(max_quantity = as.numeric(max_quantity),
+                    min_quantity = as.numeric(min_quantity))
+
+  } else if((exchange == "ftx" | exchange == "ftx-us") & fn == "public_asset_list") {
+    resp$result %>%
+      purrr::map_dfr(magrittr::extract)
+
+  } else if(exchange == "gemini" & fn == "public_asset_list") {
+    resp %>%
+      unlist() %>%
+      tibble::as_tibble()
+
+  } else if(exchange == "huobi" & fn == "public_asset_list") {
+    resp$data %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::mutate(dplyr::across(dplyr::contains("-time"), lubridate::hms, quiet = TRUE))
+
+  } else if(exchange == "kraken" & fn == "public_asset_list") {
+    resp$result %>%
+      purrr::map_dfr(magrittr::extract)
+
+  } else if(exchange == "kucoin" & fn == "public_asset_list") {
+    resp$data %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::mutate(dplyr::across(baseMinSize:priceLimitRate, as.numeric))
+
+  } else if(exchange == "poloniex" & fn == "public_asset_list") {
+    resp <- resp %>%
+      tibble::tibble(symbol = names(.))
+    resp %>%
+      tidyr::unnest_wider(data = resp, col = .) %>%
+      tidyr::separate(symbol, sep = "_", into = c("base_asset", "quote_asset")) %>%
+      dplyr::mutate(dplyr::across(last:low24hr, as.numeric))
+  }
 
   # public_order_book ----
   # else if ((exchange == "binance" | exchange == "binance-us") & fn == "public_order_book") {
@@ -187,7 +187,8 @@ get_tidy_resp <- function (exchange, fn, base_asset, quote_asset, resp) {
   #        symbol = paste0(base_asset, quote_asset),
   #        limit = depth)
   #
-  # } else if (exchange == "bitstamp" & fn == "public_order_book") {
+  # }
+  # else if (exchange == "bitstamp" & fn == "public_order_book") {
   #   list(...,
   #        group = level)
   #

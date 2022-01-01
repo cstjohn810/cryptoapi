@@ -34,65 +34,6 @@ public_asset_list <- function(exchange, dry_run = FALSE, ...) {
 
   resp <- get_api_response(base_url, path_append, query_params, dry_run)
 
-  if (exchange == "binance" | exchange == "binance-us") {
-    resp$symbols %>%
-      purrr::map_dfr(magrittr::extract, "symbol")
+  get_tidy_resp(exchange, "public_asset_list", base_asset, quote_asset, resp)
 
-  } else if (exchange == "bitstamp")  {
-    resp %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::select(url_symbol)
-
-  } else if (exchange == "bittrex")  {
-    resp %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::select(symbol)
-
-  } else if(exchange == "coinbase") {
-    resp$data %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::select(id)
-
-  } else if(exchange == "coinbase-pro") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::select(id)
-
-  } else if(exchange == "crypto.com") {
-    resp$result$instruments %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::select(instrument_name)
-
-  } else if(exchange == "ftx" | exchange == "ftx-us") {
-    resp$result %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::select(name)
-
-  } else if(exchange == "gemini") {
-    resp %>%
-      unlist() %>%
-      tibble::as_tibble()
-
-  } else if(exchange == "huobi") {
-    resp$data %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::select(symbol)
-
-  } else if(exchange == "kraken") {
-    resp$result %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::select(altname)
-
-  } else if(exchange == "kucoin") {
-    resp$data %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::select(symbol)
-
-  } else if(exchange == "poloniex") {
-    resp %>%
-      names()
-
-  } else {
-    resp
-  }
 }

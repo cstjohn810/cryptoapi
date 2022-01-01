@@ -14,7 +14,7 @@ public_ticker_price(
 )
 }
 \arguments{
-\item{exchange}{Which exchange to use for price and market data. Choices are "binance", "binance-us", "bittrex", bitstamp", "coinbase",
+\item{exchange}{Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase",
 "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".}
 
 \item{base_asset}{Base asset (default BTC)}

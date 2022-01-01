@@ -32,4 +32,5 @@ public_asset_info("bittrex")
 public_asset_info("coinbase-pro")
 public_asset_info("gemini")
 public_asset_info("kucoin")
+
 }

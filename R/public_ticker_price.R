@@ -1,6 +1,6 @@
 #' GET current public ticker price and market data
 #'
-#' @param exchange Which exchange to use for price and market data. Choices are "binance", "binance-us", "bittrex", bitstamp", "coinbase",
+#' @param exchange Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase",
 #'        "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".
 #' @param base_asset Base asset (default BTC)
 #' @param quote_asset Quote asset (default USD)
