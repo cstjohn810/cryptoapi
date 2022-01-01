@@ -4,11 +4,13 @@
 \alias{public_asset_list}
 \title{GET asset list for each exchange}
 \usage{
-public_asset_list(exchange, ...)
+public_asset_list(exchange, dry_run = FALSE, ...)
 }
 \arguments{
 \item{exchange}{Which exchange to use for list and market data. Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase",
 "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".}
+
+\item{dry_run}{If TRUE, call httr2::req_dry_run, which shows the API call without actually sending it.}
 
 \item{...}{Query parameters passed to API call}
 }

@@ -14,6 +14,8 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
 
   dplyr::case_when(
 
+# public_ticker_price ----
+
     (exchange == "binance" | exchange == "binance-us") & fn == "public_ticker_price" ~  "api/v3/ticker/price",
     exchange == "bitstamp" & fn == "public_ticker_price" ~  paste0("ticker/", tolower(base_asset), tolower(quote_asset)),
     exchange == "bittrex" & fn == "public_ticker_price" ~ paste0("markets/", base_asset, "-", quote_asset, "/ticker"),
@@ -27,6 +29,7 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
     exchange == "kucoin" & fn == "public_ticker_price" ~ "api/v1/market/orderbook/level1",
     exchange == "poloniex" & fn == "public_ticker_price" ~ "public",
 
+# public_asset_list ----
     (exchange == "binance" | exchange == "binance-us") & fn == "public_asset_list" ~  "api/v3/exchangeInfo",
     exchange == "bitstamp" & fn == "public_asset_list" ~  "trading-pairs-info",
     exchange == "bittrex" & fn == "public_asset_list" ~ "markets/",
@@ -40,6 +43,7 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
     exchange == "kucoin" & fn == "public_asset_list" ~ "api/v1/symbols",
     exchange == "poloniex" & fn == "public_asset_list" ~ "public",
 
+# public_order_book ----
     (exchange == "binance" | exchange == "binance-us") & fn == "public_order_book" ~  "api/v3/depth",
     exchange == "bitstamp" & fn == "public_order_book" ~  paste0("order_book/", tolower(base_asset), tolower(quote_asset)),
     exchange == "bittrex" & fn == "public_order_book" ~ paste0("markets/", base_asset, "-", quote_asset, "/orderbook"),
@@ -52,6 +56,7 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
     exchange == "kucoin" & fn == "public_order_book" ~ "api/v1/market/orderbook/level2_100",
     exchange == "poloniex" & fn == "public_order_book" ~ "public",
 
+# public_candles ----
     (exchange == "binance" | exchange == "binance-us") & fn == "public_candles" ~  "api/v3/klines",
     exchange == "bitstamp" & fn == "public_candles" ~  paste0("ohlc/", tolower(base_asset), tolower(quote_asset)),
     exchange == "bittrex" & fn == "public_candles" ~ paste0("markets/", base_asset, "-", quote_asset, "/candles/", candle_type, time_frame, "/recent"),
@@ -64,6 +69,7 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
     exchange == "kucoin" & fn == "public_candles" ~ "api/v1/market/candles",
     exchange == "poloniex" & fn == "public_candles" ~ "public",
 
+# public_trades ----
     (exchange == "binance" | exchange == "binance-us") & fn == "public_trades" ~  "api/v3/trades",
     exchange == "bitstamp" & fn == "public_trades" ~  paste0("transactions/", tolower(base_asset), tolower(quote_asset)),
     exchange == "bittrex" & fn == "public_trades" ~ paste0("markets/", base_asset, "-", quote_asset, "/trades"),
@@ -76,6 +82,7 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
     exchange == "kucoin" & fn == "public_trades" ~ "api/v1/market/histories",
     exchange == "poloniex" & fn == "public_trades" ~ "public",
 
+# public_asset_info ----
     # (exchange == "binance" | exchange == "binance-us") & fn == "public_asset_info" ~  "api/v1/ticker/bookTicker",
     # exchange == "bitstamp" & fn == "public_asset_info" ~  paste0("asset_info/", tolower(base_asset), tolower(quote_asset)),
     exchange == "bittrex" & fn == "public_asset_info" ~ "markets/summaries",
@@ -88,6 +95,7 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
     # exchange == "kraken" & fn == "public_asset_info" ~ "public/Depth",
     exchange == "kucoin" & fn == "public_asset_info" ~ paste0("api/v2/currencies/", base_asset),
 
+# TRUE ----
     TRUE ~ "Unsupported exchange or invalid entry"
   )
 }

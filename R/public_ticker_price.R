@@ -10,9 +10,9 @@
 #'
 #' @return
 #' @export
-#' @importFrom magrittr `%>%`
 #'
-#' @examples public_ticker_price("binance")
+#' @examples
+#' public_ticker_price("binance")
 #' public_ticker_price("binance")
 #' public_ticker_price("binance-us")
 #' public_ticker_price("bitstamp")
@@ -47,58 +47,11 @@ public_ticker_price <- function(exchange = "binance", base_asset = "BTC", quote_
 
   resp <- get_api_response(base_url, path_append, query_params, dry_run)
 
-  # resp
-
   if(dry_run == TRUE) {
     resp
   } else if (price_only == FALSE) {
-    resp
-  } else if (exchange == "binance" | exchange == "binance-us" | exchange == "coinbase-pro") {
-    resp$price %>%
-      as.numeric()
-
-  } else if (exchange == "bitstamp") {
-    resp$last %>%
-      as.numeric()
-
-  } else if (exchange == "bittrex") {
-    resp$lastTradeRate %>%
-      as.numeric()
-
-  } else if (exchange == "coinbase") {
-    resp$data$amount %>%
-      as.numeric()
-
-  } else if (exchange == "crypto.com") {
-    resp$result$data$a
-
-  } else if (exchange == "ftx" | exchange == "ftx-us") {
-    resp$result$price
-
-  } else if (exchange == "gemini") {
-    resp$close %>%
-      as.numeric()
-
-  } else if (exchange == "huobi") {
-    resp$tick$data[[1]]$price
-
-  } else if (exchange == "kraken") {
-    resp$result[[1]]$p[1] %>%
-      as.numeric()
-
-  } else if (exchange == "kucoin") {
-    resp$data$price %>%
-      as.numeric()
-
-  } else if (exchange == "poloniex") {
-    sub_list <- paste0(quote_asset, "_", base_asset)
-    resp[sub_list] %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::pull(last) %>%
-      as.numeric()
-
-
+    get_tidy_resp(exchange, "public_ticker_price_addl", base_asset, quote_asset, resp)
   } else {
-    resp
+    get_tidy_resp(exchange, "public_ticker_price", base_asset, quote_asset, resp)
   }
 }

@@ -24,8 +24,6 @@ devtools::install_github("cstjohn810/cryptoapi")
 
 ## Example
 
-This is a basic example:
-
 ``` r
 library(cryptoapi)
 library(magrittr)
@@ -35,7 +33,7 @@ Can pull out the current ticker price of any asset from any exchange:
 
 ``` r
 public_ticker_price(exchange = "binance", base_asset = "BTC", quote_asset = "USD")
-#> [1] 46450.05
+#> [1] 47640.2
 ```
 
 Alternatively, get extra price information by toggling the price\_only
@@ -43,72 +41,14 @@ option:
 
 ``` r
 public_ticker_price(exchange = "ftx", base_asset = "BTC", quote_asset = "USD", price_only = FALSE)
-#> $success
-#> [1] TRUE
-#> 
-#> $result
-#> $result$name
-#> [1] "BTC/USD"
-#> 
-#> $result$enabled
-#> [1] TRUE
-#> 
-#> $result$postOnly
-#> [1] FALSE
-#> 
-#> $result$priceIncrement
-#> [1] 1
-#> 
-#> $result$sizeIncrement
-#> [1] 0.0001
-#> 
-#> $result$minProvideSize
-#> [1] 0.0001
-#> 
-#> $result$last
-#> [1] 46460
-#> 
-#> $result$bid
-#> [1] 46450
-#> 
-#> $result$ask
-#> [1] 46452
-#> 
-#> $result$price
-#> [1] 46452
-#> 
-#> $result$type
-#> [1] "spot"
-#> 
-#> $result$baseCurrency
-#> [1] "BTC"
-#> 
-#> $result$quoteCurrency
-#> [1] "USD"
-#> 
-#> $result$underlying
-#> NULL
-#> 
-#> $result$restricted
-#> [1] FALSE
-#> 
-#> $result$highLeverageFeeExempt
-#> [1] TRUE
-#> 
-#> $result$change1h
-#> [1] -0.001032258
-#> 
-#> $result$change24h
-#> [1] -0.01626429
-#> 
-#> $result$changeBod
-#> [1] -0.01613928
-#> 
-#> $result$quoteVolume24h
-#> [1] 540317520
-#> 
-#> $result$volumeUsd24h
-#> [1] 540317520
+#> # A tibble: 1 x 20
+#>   name  enabled postOnly priceIncrement sizeIncrement minProvideSize  last   bid
+#>   <chr> <lgl>   <lgl>             <dbl>         <dbl>          <dbl> <dbl> <dbl>
+#> 1 BTC/~ TRUE    FALSE                 1        0.0001         0.0001 47659 47660
+#> # ... with 12 more variables: ask <dbl>, price <dbl>, type <chr>,
+#> #   baseCurrency <chr>, quoteCurrency <chr>, restricted <lgl>,
+#> #   highLeverageFeeExempt <lgl>, change1h <dbl>, change24h <dbl>,
+#> #   changeBod <dbl>, quoteVolume24h <dbl>, volumeUsd24h <dbl>
 ```
 
 If necessary, find the available assets for any exchange:
@@ -135,20 +75,20 @@ View order book for varying depths:
 
 ``` r
 public_order_book(exchange = "coinbase-pro", level = 2)
-#> # A tibble: 15,161 x 6
+#> # A tibble: 16,364 x 6
 #>    bids_price bids_qty   bids.3 asks_price asks_qty   asks.3
 #>    <chr>      <chr>       <int> <chr>      <chr>       <int>
-#>  1 46459.71   0.14734789      2 46459.72   0.00006373      1
-#>  2 46458.74   0.013724        1 46462.82   0.002609        1
-#>  3 46456.31   0.001           1 46463.29   0.00006372      1
-#>  4 46456.3    0.15269         1 46465.69   0.01028336      1
-#>  5 46454.06   2.05429906      1 46466.85   0.00006371      1
-#>  6 46452.84   0.00991817      1 46467.12   0.01063         1
-#>  7 46452.32   0.04822396      1 46469.19   0.002           1
-#>  8 46451.49   0.47200642      1 46469.69   0.00219         1
-#>  9 46451.23   0.18756226      1 46469.88   0.008           1
-#> 10 46451.22   0.1             1 46470.42   0.00006371      1
-#> # ... with 15,151 more rows
+#>  1 47662.36   0.08921034      1 47665.53   0.25147058      1
+#>  2 47661.92   0.03800846      1 47667.37   0.01638513      1
+#>  3 47661.76   0.29306189      1 47667.38   0.05245826      1
+#>  4 47661.71   0.05770904      1 47668.66   0.14884         1
+#>  5 47660.75   0.03948266      1 47669.18   0.1             1
+#>  6 47660.24   0.1             1 47669.41   2.10195572      1
+#>  7 47659.83   0.04462104      1 47669.42   0.5170879       1
+#>  8 47658.65   0.10623272      1 47669.43   2.17506722      1
+#>  9 47657.52   0.003777        1 47669.45   1.97401059      1
+#> 10 47657.45   0.01638513      1 47669.62   0.042           1
+#> # ... with 16,354 more rows
 ```
 
 View candle information (OHLC):
@@ -158,22 +98,22 @@ public_candles("gemini", time_frame = "1m") %>%
   head(1)
 #> [[1]]
 #> [[1]][[1]]
-#> [1] 1640992680000
+#> [1] 1641061620000
 #> 
 #> [[1]][[2]]
-#> [1] 46454.39
+#> [1] 47668.38
 #> 
 #> [[1]][[3]]
-#> [1] 46468.95
+#> [1] 47668.38
 #> 
 #> [[1]][[4]]
-#> [1] 46454.39
+#> [1] 47668.38
 #> 
 #> [[1]][[5]]
-#> [1] 46459.78
+#> [1] 47668.38
 #> 
 #> [[1]][[6]]
-#> [1] 0.249033
+#> [1] 0
 ```
 
 View recent trades:
@@ -183,16 +123,16 @@ public_trades(exchange = "kraken")
 #> # A tibble: 1,000 x 6
 #>    price       volume            time side  type  misc 
 #>    <chr>       <chr>            <dbl> <chr> <chr> <chr>
-#>  1 46335.40000 0.00088866 1640988211. b     m     ""   
-#>  2 46335.40000 0.00282223 1640988211. b     m     ""   
-#>  3 46335.40000 0.00088199 1640988215. b     m     ""   
-#>  4 46335.40000 0.00159155 1640988215. b     m     ""   
-#>  5 46335.40000 0.00010000 1640988215. b     m     ""   
-#>  6 46335.80000 0.00719646 1640988215. b     m     ""   
-#>  7 46335.80000 1.00000000 1640988229. b     l     ""   
-#>  8 46335.80000 0.00208816 1640988230. b     l     ""   
-#>  9 46335.80000 0.00225887 1640988230. b     l     ""   
-#> 10 46335.80000 0.00010725 1640988230. b     l     ""   
+#>  1 47707.70000 0.00021325 1641058785. b     l     ""   
+#>  2 47710.70000 0.00150000 1641058794. b     l     ""   
+#>  3 47710.80000 0.00209596 1641058794. b     l     ""   
+#>  4 47710.80000 0.00209596 1641058794. b     l     ""   
+#>  5 47710.80000 0.00209596 1641058794. b     l     ""   
+#>  6 47710.80000 0.00110000 1641058794. b     l     ""   
+#>  7 47729.60000 0.01000000 1641058798. s     l     ""   
+#>  8 47729.70000 0.00639831 1641058801. b     m     ""   
+#>  9 47729.70000 0.00180000 1641058801. b     m     ""   
+#> 10 47729.80000 0.00160000 1641058801. b     m     ""   
 #> # ... with 990 more rows
 ```
 

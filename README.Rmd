@@ -33,52 +33,50 @@ devtools::install_github("cstjohn810/cryptoapi")
 
 ## Example
 
-This is a basic example:
-
-```{r example}
+```{r libraries}
 library(cryptoapi)
 library(magrittr)
 ```
 
 Can pull out the current ticker price of any asset from any exchange:
 
-```{r}
+```{r Ticker Price}
 public_ticker_price(exchange = "binance", base_asset = "BTC", quote_asset = "USD")
 ```
 
 Alternatively, get extra price information by toggling the price_only option:
 
-```{r}
+```{r Ticker Price Verbose}
 public_ticker_price(exchange = "ftx", base_asset = "BTC", quote_asset = "USD", price_only = FALSE)
 ```
 
 If necessary, find the available assets for any exchange:
 
-```{r}
+```{r Asset List}
 public_asset_list(exchange = "crypto.com")
 ```
 
 View order book for varying depths:
 
-```{r}
+```{r Order Book}
 public_order_book(exchange = "coinbase-pro", level = 2)
 ```
 
 View candle information (OHLC):
 
-```{r}
+```{r Candles (OHLC)}
 public_candles("gemini", time_frame = "1m") %>% 
   head(1)
 ```
 
 View recent trades:
 
-```{r}
+```{r Trades}
 public_trades(exchange = "kraken")
 ```
 View additional asset information:
 
-```{r}
+```{r Asset Info}
 public_asset_info("gemini")
 ```
 

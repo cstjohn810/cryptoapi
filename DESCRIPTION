@@ -13,6 +13,7 @@ Imports:
     dplyr,
     httr2,
     jsonlite,
+    lubridate,
     magrittr,
     purrr,
     tibble,
