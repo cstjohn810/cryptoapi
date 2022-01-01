@@ -25,9 +25,11 @@ public_asset_info <- function(exchange = "coinbase-pro", base_asset = "BTC", quo
     quote_asset
   }
 
+  base_url <- get_base_url(exchange)
+
   path_append <- get_path_append(exchange, "public_asset_info", base_asset, quote_asset)
 
-  resp <- httr2::request(get_base_url(exchange)) %>%
+  resp <- httr2::request(base_url) %>%
     httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
     httr2::req_url_path_append(path_append) %>%
     # httr2::req_dry_run()

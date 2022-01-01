@@ -73,79 +73,18 @@ public_order_book <- function(exchange = "binance", base_asset = "BTC", quote_as
     quote_asset
   }
 
+  base_url <- get_base_url(exchange)
+
   path_append <- get_path_append(exchange, "public_order_book", base_asset, quote_asset)
 
-  query_params <- if(exchange == "binance" | exchange == "binance-us") {
-    list(
-      ...,
-      symbol = paste0(base_asset, quote_asset),
-      limit = depth
-    )
-  } else if(exchange == "bitstamp") {
-    list(
-      ...,
-      group = level
-    )
-  } else if(exchange == "bittrex") {
-    list(
-      ...,
-      depth = depth
-    )
-  } else if(exchange == "coinbase-pro") {
-    list(
-      ...,
-      level = level
-    )
-  } else if(exchange == "crypto.com") {
-    list(
-      ...,
-      instrument_name = paste0(toupper(base_asset), "_", toupper(quote_asset)),
-      depth = depth
-    )
-  } else if(exchange == "ftx" | exchange == "ftx-us") {
-    list(
-      ...,
-      depth = depth
-    )
-  } else if(exchange == "gemini") {
-    list(
-      ...,
-      limit_bids = depth,
-      limit_asks = depth
-    )
-  } else if(exchange == "huobi") {
-    list(
-      ...,
-      symbol = paste0(tolower(base_asset), tolower(quote_asset)),
-      type = level
-    )
-  } else if(exchange == "kraken") {
-    list(
-      ...,
-      pair = paste0(base_asset, quote_asset),
-      count = depth
-    )
-  } else if(exchange == "kucoin") {
-    list(
-      ...,
-      symbol = paste0(toupper(base_asset), "-", toupper(quote_asset))
-    )
-  } else if(exchange == "poloniex") {
-    list(
-      ...,
-      command = "returnOrderBook",
-      currencyPair = paste0(toupper(quote_asset), "_", toupper(base_asset)),
-      depth = depth
-    )
-  } else {
-    NULL
-  }
+  query_params <- get_query_params(exchange, "public_order_book", base_asset, quote_asset, ..., level = level, depth = depth)
 
-  resp <- httr2::request(get_base_url(exchange)) %>%
+
+  resp <- httr2::request(base_url) %>%
     httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
     httr2::req_url_path_append(path_append) %>%
     httr2::req_url_query(!!!query_params) %>%
-    # httr2::req_dry_run()
+  #   # httr2::req_dry_run()
     httr2::req_perform() %>%
     httr2::resp_body_json()
 

@@ -38,49 +38,19 @@ public_ticker_price <- function(exchange = "binance", base_asset = "BTC", quote_
     quote_asset
   }
 
+  base_url <- get_base_url(exchange)
+
   path_append <- get_path_append(exchange, "public_ticker_price", base_asset, quote_asset)
 
-  query_params <- if(exchange == "binance" | exchange == "binance-us") {
-    list(
-      ...,
-      symbol = paste0(base_asset, quote_asset)
-    )
-  } else if(exchange == "crypto.com") {
-    list(
-      ...,
-      instrument_name = paste0(toupper(base_asset), "_", toupper(quote_asset))
-    )
-  } else if(exchange == "huobi") {
-    list(
-      ...,
-      symbol = paste0(tolower(base_asset), tolower(quote_asset))
-    )
-  } else if(exchange == "kraken") {
-    list(
-      ...,
-      pair = paste0(base_asset, quote_asset)
-    )
-  } else if(exchange == "kucoin") {
-    list(
-      ...,
-      symbol = paste0(toupper(base_asset), "-", toupper(quote_asset))
-    )
-  } else if(exchange == "poloniex") {
-    list(
-      ...,
-      command = "returnTicker"
-    )
-  } else {
-    NULL
-  }
+  query_params <- get_query_params(exchange, "public_ticker_price", base_asset, quote_asset)
 
-  resp <- httr2::request(get_base_url(exchange)) %>%
-    httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
-    httr2::req_url_path_append(path_append) %>%
-    httr2::req_url_query(!!!query_params) %>%
-    # httr2::req_dry_run()
-    httr2::req_perform() %>%
-    httr2::resp_body_json()
+  resp <- httr2::request(base_url) %>%
+  httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
+  httr2::req_url_path_append(path_append) %>%
+  httr2::req_url_query(!!!query_params) %>%
+  # httr2::req_dry_run()
+  httr2::req_perform() %>%
+  httr2::resp_body_json()
 
   # resp
 

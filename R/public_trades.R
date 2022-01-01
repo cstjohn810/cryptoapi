@@ -60,70 +60,15 @@ public_trades <- function(exchange = "binance", base_asset = "BTC", quote_asset 
     quote_asset
   }
 
+  base_url <- get_base_url(exchange)
+
   path_append <- get_path_append(exchange, "public_trades", base_asset, quote_asset)
 
-  query_params <- if(exchange == "binance" | exchange == "binance-us") {
-    list(
-      ...,
-      symbol = paste0(base_asset, quote_asset),
-      limit = limit
-    )
-  } else if(exchange == "bitstamp") {
-    list(
-      ...,
-      time = time_frame
-    )
-  } else if(exchange == "coinbase-pro") {
-    list(
-      ...,
-      limit = limit
-    )
-  } else if(exchange == "crypto.com") {
-    list(
-      ...,
-      instrument_name = paste0(toupper(base_asset), "_", toupper(quote_asset))
-    )
-  } else if(exchange == "ftx" | exchange == "ftx-us") {
-    list(
-      ...,
-      start_time = start_time,
-      end_time = end_time
-    )
-  } else if(exchange == "gemini") {
-    list(
-      ...,
-      limit_trades = limit,
-      timestamp = start_time
-    )
-  } else if(exchange == "huobi") {
-    list(
-      ...,
-      symbol = paste0(tolower(base_asset), tolower(quote_asset)),
-      size = limit
-    )
-  } else if(exchange == "kraken") {
-    list(
-      ...,
-      pair = paste0(base_asset, quote_asset)
-    )
-  } else if(exchange == "kucoin") {
-    list(
-      ...,
-      symbol = paste0(toupper(base_asset), "-", toupper(quote_asset))
-    )
-  } else if(exchange == "poloniex") {
-    list(
-      ...,
-      command = "returnTradeHistory",
-      currencyPair = paste0(toupper(quote_asset), "_", toupper(base_asset)),
-      start = start_time,
-      end = end_time
-    )
-  } else {
-    NULL
-  }
+  query_params <- get_query_params(exchange, "public_trades", base_asset, quote_asset, ..., limit = limit,
+                                   time_frame = time_frame, start_time = start_time, end_time = end_time)
 
-  resp <- httr2::request(get_base_url(exchange)) %>%
+
+  resp <- httr2::request(base_url) %>%
     httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
     httr2::req_url_path_append(path_append) %>%
     httr2::req_url_query(!!!query_params) %>%

@@ -100,88 +100,21 @@ public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset
 
   candle_type <- if(is.null(candle_type)) NULL else(paste0(candle_type, "/"))
 
+  base_url <- get_base_url(exchange)
+
   path_append <- get_path_append(exchange, "public_candles", base_asset, quote_asset, time_frame, candle_type)
 
-  query_params <- if(exchange == "binance" | exchange == "binance-us") {
-    list(
-      ...,
-      symbol = paste0(base_asset, quote_asset),
-      interval = time_frame,
-      start_time = start_time,
-      end_time = end_time,
-      limit = limit
-    )
-  } else if(exchange == "bitstamp") {
-    list(
-      ...,
-      start = start_time,
-      end = end_time,
-      step = time_frame,
-      limit = limit
-    )
+  query_params <- get_query_params(exchange, "public_candles", base_asset, quote_asset, ..., time_frame = time_frame, start_time = start_time,
+                                   end_time = end_time, limit = limit, candle_type = candle_type)
 
-  } else if(exchange == "coinbase-pro") {
-    list(
-      ...,
-      start = start_time,
-      end = end_time,
-      granularity = time_frame
-    )
-  } else if(exchange == "crypto.com") {
-    list(
-      ...,
-      instrument_name = paste0(toupper(base_asset), "_", toupper(quote_asset)),
-      timeframe = time_frame
-    )
-  } else if(exchange == "ftx" | exchange == "ftx-us") {
-    list(
-      ...,
-      start_time = start_time,
-      end_time = end_time,
-      resolution = time_frame
-    )
-  } else if(exchange == "huobi") {
-    list(
-      ...,
-      symbol = paste0(tolower(base_asset), tolower(quote_asset)),
-      period = time_frame,
-      size = limit
-    )
-  } else if(exchange == "kraken") {
-    list(
-      ...,
-      pair = paste0(base_asset, quote_asset),
-      interval = time_frame,
-      since = start_time
-    )
-  } else if(exchange == "kucoin") {
-    list(
-      ...,
-      symbol = paste0(toupper(base_asset), "-", toupper(quote_asset)),
-      startAt = start_time,
-      endAt = end_time,
-      type = time_frame
-    )
-  } else if(exchange == "poloniex") {
-    list(
-      ...,
-      command = "returnChartData",
-      currencyPair = paste0(toupper(quote_asset), "_", toupper(base_asset)),
-      start = start_time,
-      end = end_time,
-      period = time_frame
-    )
-  } else {
-    NULL
-    }
 
-  resp <- httr2::request(get_base_url(exchange)) %>%
+  resp <- httr2::request(base_url) %>%
     httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
     httr2::req_url_path_append(path_append) %>%
     httr2::req_url_query(!!!query_params) %>%
     # httr2::req_dry_run()
-  httr2::req_perform() %>%
-  httr2::resp_body_json()
+    httr2::req_perform() %>%
+    httr2::resp_body_json()
 
   resp
 

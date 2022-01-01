@@ -25,18 +25,13 @@ public_asset_list <- function(exchange, ...) {
 
   exchange <- tolower(exchange)
 
+  base_url <- get_base_url(exchange)
+
   path_append <- get_path_append(exchange, "public_asset_list")
 
-  query_params <- if(exchange == "poloniex") {
-    list(
-      ...,
-      command = "returnTicker"
-    )
-  } else {
-    NULL
-  }
+  query_params <- get_query_params(exchange, "public_asset_list")
 
-  resp <- httr2::request(get_base_url(exchange)) %>%
+  resp <- httr2::request(base_url) %>%
     httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
     httr2::req_url_path_append(path_append) %>%
     httr2::req_url_query(!!!query_params) %>%
