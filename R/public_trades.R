@@ -4,6 +4,7 @@
 #'        "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".
 #' @param base_asset Base asset (default BTC)
 #' @param quote_asset Quote asset (default USD)
+#' @param dry_run If TRUE, call httr2::req_dry_run, which shows the API call without actually sending it.
 #' @param ... Query parameters passed to API call
 #' @param limit Parameter used to limit number of trades.
 #'        \itemize{
@@ -47,7 +48,7 @@
 #' public_trades("kraken")
 #' public_trades("kucoin")
 #' public_trades("poloniex")
-public_trades <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", ..., limit = NULL,
+public_trades <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", dry_run = FALSE, ..., limit = NULL,
                           time_frame = NULL, start_time = NULL, end_time = NULL) {
 
   exchange <- tolower(exchange)
@@ -67,18 +68,11 @@ public_trades <- function(exchange = "binance", base_asset = "BTC", quote_asset 
   query_params <- get_query_params(exchange, "public_trades", base_asset, quote_asset, ..., limit = limit,
                                    time_frame = time_frame, start_time = start_time, end_time = end_time)
 
+  resp <- get_api_response(base_url, path_append, query_params, dry_run)
 
-  resp <- httr2::request(base_url) %>%
-    httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
-    httr2::req_url_path_append(path_append) %>%
-    httr2::req_url_query(!!!query_params) %>%
-    # httr2::req_dry_run()
-    httr2::req_perform() %>%
-    httr2::resp_body_json()
-
-  #resp
-
-  if (exchange == "binance" | exchange == "binance-us") {
+  if(dry_run == TRUE) {
+    resp
+  } else if (exchange == "binance" | exchange == "binance-us") {
     resp %>%
       purrr::map_dfr(magrittr::extract)
 

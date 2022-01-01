@@ -8,6 +8,7 @@ public_trades(
   exchange = "binance",
   base_asset = "BTC",
   quote_asset = "USD",
+  dry_run = FALSE,
   ...,
   limit = NULL,
   time_frame = NULL,
@@ -22,6 +23,8 @@ public_trades(
 \item{base_asset}{Base asset (default BTC)}
 
 \item{quote_asset}{Quote asset (default USD)}
+
+\item{dry_run}{If TRUE, call httr2::req_dry_run, which shows the API call without actually sending it.}
 
 \item{...}{Query parameters passed to API call}
 

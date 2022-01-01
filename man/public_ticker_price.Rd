@@ -9,6 +9,7 @@ public_ticker_price(
   base_asset = "BTC",
   quote_asset = "USD",
   price_only = TRUE,
+  dry_run = FALSE,
   ...
 )
 }
@@ -21,6 +22,8 @@ public_ticker_price(
 \item{quote_asset}{Quote asset (default USD)}
 
 \item{price_only}{If TRUE, only give current price as a numeric vector. If FALSE, give all market data available from API call.}
+
+\item{dry_run}{If TRUE, call httr2::req_dry_run, which shows the API call without actually sending it.}
 
 \item{...}{Query parameters passed to API call}
 }

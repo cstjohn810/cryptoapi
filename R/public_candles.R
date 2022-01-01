@@ -5,6 +5,7 @@
 #'        "huobi", "kraken","kucoin", and "poloniex".
 #' @param base_asset Base asset (default "BTC")
 #' @param quote_asset Quote asset (default "USD")
+#' @param dry_run If TRUE, call httr2::req_dry_run, which shows the API call without actually sending it.
 #' @param ... Query parameters passed to API call
 #' @param time_frame Parameter used for chart interval and timeframe.
 #'        \itemize{
@@ -85,7 +86,7 @@
 #' public_candles("kraken")
 #' public_candles("kucoin", time_frame = "1min")
 #' public_candles("poloniex", time_frame = 300, start_time = 1546300800, end_time = 1546646400)
-public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", ..., time_frame = NULL,
+public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", dry_run = FALSE, ..., time_frame = NULL,
                            start_time = NULL, end_time = NULL, limit = NULL, candle_type = NULL) {
 
   exchange <- tolower(exchange)
@@ -107,16 +108,13 @@ public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset
   query_params <- get_query_params(exchange, "public_candles", base_asset, quote_asset, ..., time_frame = time_frame, start_time = start_time,
                                    end_time = end_time, limit = limit, candle_type = candle_type)
 
+  resp <- get_api_response(base_url, path_append, query_params, dry_run)
 
-  resp <- httr2::request(base_url) %>%
-    httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
-    httr2::req_url_path_append(path_append) %>%
-    httr2::req_url_query(!!!query_params) %>%
-    # httr2::req_dry_run()
-    httr2::req_perform() %>%
-    httr2::resp_body_json()
-
-  resp
+  if(dry_run == TRUE) {
+    resp
+  } else {
+    resp
+  }
 
   # if (exchange == "binance" | exchange == "binance-us") {
   #   resp %>%

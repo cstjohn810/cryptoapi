@@ -5,6 +5,7 @@
 #' @param base_asset Base asset (default BTC)
 #' @param quote_asset Quote asset (default USD)
 #' @param price_only If TRUE, only give current price as a numeric vector. If FALSE, give all market data available from API call.
+#' @param dry_run If TRUE, call httr2::req_dry_run, which shows the API call without actually sending it.
 #' @param ... Query parameters passed to API call
 #'
 #' @return
@@ -26,7 +27,7 @@
 #' public_ticker_price("kraken")
 #' public_ticker_price("kucoin")
 #' public_ticker_price("poloniex")
-public_ticker_price <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", price_only = TRUE, ...) {
+public_ticker_price <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", price_only = TRUE, dry_run = FALSE, ...) {
 
   exchange <- tolower(exchange)
 
@@ -44,19 +45,12 @@ public_ticker_price <- function(exchange = "binance", base_asset = "BTC", quote_
 
   query_params <- get_query_params(exchange, "public_ticker_price", base_asset, quote_asset)
 
-  resp <- httr2::request(base_url) %>%
-  httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
-  httr2::req_url_path_append(path_append) %>%
-  httr2::req_url_query(!!!query_params) %>%
-  # httr2::req_dry_run()
-  httr2::req_perform() %>%
-  httr2::resp_body_json()
+  resp <- get_api_response(base_url, path_append, query_params, dry_run)
 
-  # resp
-
-  if(price_only == FALSE) {
+  if(dry_run == TRUE) {
     resp
-
+  } else if (price_only == FALSE) {
+    resp
   } else if (exchange == "binance" | exchange == "binance-us") {
     resp %>%
       purrr::map_dfr(magrittr::extract) %>%

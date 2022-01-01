@@ -7,7 +7,8 @@
 public_asset_info(
   exchange = "coinbase-pro",
   base_asset = "BTC",
-  quote_asset = "USD"
+  quote_asset = "USD",
+  dry_run = FALSE
 )
 }
 \arguments{
@@ -17,6 +18,8 @@ Choices are "bittrex", "coinbase-pro", "gemini", and "kucoin".}
 \item{base_asset}{Base asset (default "BTC")}
 
 \item{quote_asset}{Quote asset (default "USD")}
+
+\item{dry_run}{If TRUE, call httr2::req_dry_run, which shows the API call without actually sending it.}
 }
 \value{
 

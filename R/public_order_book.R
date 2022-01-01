@@ -4,6 +4,7 @@
 #'        "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".
 #' @param base_asset Base asset (default BTC)
 #' @param quote_asset Quote asset (default USD)
+#' @param dry_run If TRUE, call httr2::req_dry_run, which shows the API call without actually sending it.
 #' @param ... Query parameters passed to API call
 #' @param level Parameter used for varying aggregations of order book.
 #'        \itemize{
@@ -60,7 +61,7 @@
 #' public_order_book(exchange = "kraken")
 #' public_order_book(exchange = "kucoin")
 #' public_order_book(exchange = "poloniex")
-public_order_book <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", ...,
+public_order_book <- function(exchange = "binance", base_asset = "BTC", quote_asset = "USD", dry_run = FALSE, ...,
                               level = NULL, depth = NULL) {
 
   exchange <- tolower(exchange)
@@ -79,16 +80,11 @@ public_order_book <- function(exchange = "binance", base_asset = "BTC", quote_as
 
   query_params <- get_query_params(exchange, "public_order_book", base_asset, quote_asset, ..., level = level, depth = depth)
 
+  resp <- get_api_response(base_url, path_append, query_params, dry_run)
 
-  resp <- httr2::request(base_url) %>%
-    httr2::req_user_agent("cryptoapi (https://github.com/cstjohn810/cryptoapi)") %>%
-    httr2::req_url_path_append(path_append) %>%
-    httr2::req_url_query(!!!query_params) %>%
-  #   # httr2::req_dry_run()
-    httr2::req_perform() %>%
-    httr2::resp_body_json()
-
-  if (exchange == "binance" | exchange == "binance-us") {
+  if(dry_run == TRUE) {
+    resp
+  } else if (exchange == "binance" | exchange == "binance-us") {
     tibble::tibble(bids = resp$bids,
                    asks = resp$asks) %>%
       tidyr::unnest_wider(col = bids, names_sep = ".") %>%
