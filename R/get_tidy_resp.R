@@ -127,7 +127,7 @@ get_tidy_resp <- function (exchange, fn, base_asset, quote_asset, resp, level = 
 
   } else if (exchange == "bitstamp" & fn == "public_asset_list")  {
     resp %>%
-      purrr::map_dfr(magrittr::extract )%>%
+      purrr::map_dfr(magrittr::extract) %>%
       tidyr::separate(name, sep = "/", into = c("base_asset", "quote_asset"))
 
   } else if (exchange == "bittrex" & fn == "public_asset_list")  {
@@ -249,7 +249,7 @@ get_tidy_resp <- function (exchange, fn, base_asset, quote_asset, resp, level = 
         tidyr::unnest_wider(col = asks, names_sep = ".") %>%
         dplyr::select(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
 
-    } else if(exchange == "ftx" | exchange == "ftx-us" & fn == "public_order_book") {
+    } else if((exchange == "ftx" | exchange == "ftx-us") & fn == "public_order_book") {
       tibble::tibble(bids = resp$result$bids, asks = resp$result$asks) %>%
         tidyr::unnest_wider(col = bids, names_sep = ".") %>%
         tidyr::unnest_wider(col = asks, names_sep = ".") %>%
@@ -288,66 +288,85 @@ get_tidy_resp <- function (exchange, fn, base_asset, quote_asset, resp, level = 
     }
 
   # public_candles ----
-  # else if ((exchange == "binance" | exchange == "binance-us") & fn == "public_candles") {
-  #   list(...,
-  #        symbol = paste0(base_asset, quote_asset),
-  #        interval = time_frame,
-  #        start_time = start_time,
-  #        end_time = end_time,
-  #        limit = limit)
-  #
-  # } else if (exchange == "bitstamp" & fn == "public_candles") {
-  #   list(...,
-  #        start = start_time,
-  #        end = end_time,
-  #        step = time_frame,
-  #        limit = limit)
-  #
-  # } else if (exchange == "coinbase-pro" & fn == "public_candles") {
-  #   list(...,
-  #        start = start_time,
-  #        end = end_time,
-  #        granularity = time_frame)
-  #
-  # } else if (exchange == "crypto.com" & fn == "public_candles") {
-  #   list(...,
-  #        instrument_name = paste0(toupper(base_asset), "_", toupper(quote_asset)),
-  #        timeframe = time_frame)
-  #
-  # } else if ((exchange == "ftx" | exchange == "ftx-us") & fn == "public_candles") {
-  #   list(...,
-  #        start_time = start_time,
-  #        end_time = end_time,
-  #        resolution = time_frame)
-  #
-  # } else if (exchange == "huobi" & fn == "public_candles") {
-  #   list(...,
-  #        symbol = paste0(tolower(base_asset), tolower(quote_asset)),
-  #        period = time_frame,
-  #        size = limit)
-  #
-  # } else if (exchange == "kraken" & fn == "public_candles") {
-  #   list(...,
-  #        pair = paste0(base_asset, quote_asset),
-  #        interval = time_frame,
-  #        since = start_time)
-  #
-  # } else if (exchange == "kucoin" & fn == "public_candles") {
-  #   list(...,
-  #        symbol = paste0(toupper(base_asset), "-", toupper(quote_asset)),
-  #        startAt = start_time,
-  #        endAt = end_time,
-  #        type = time_frame)
-  #
-  # } else if (exchange == "poloniex" & fn == "public_candles") {
-  #   list(...,
-  #        command = "returnChartData",
-  #        currencyPair = paste0(toupper(quote_asset), "_", toupper(base_asset)),
-  #        start = start_time,
-  #        end = end_time,
-  #        period = time_frame)
-  #
-  # }
+  else if ((exchange == "binance" | exchange == "binance-us") & fn == "public_candles") {
+    nm1 <- c("open_time", "open", "high", "low", "close", "vol", "close_time", "quote_asset_vol", "num_trades", "buy_vol", "quote_vol", "ignore")
+
+    resp <- resp %>%
+      tibble::tibble(symbol = names(.))
+    resp %>%
+      tidyr::unnest_wider(data = resp, col = ., names_repair = ~nm1) %>%
+      dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric)) %>%
+      suppressMessages
+
+  } else if (exchange == "bitstamp" & fn == "public_candles") {
+    resp$data$ohlc %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric))
+
+  } else if (exchange == "bittrex" & fn == "public_candles") {
+    resp %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::mutate(startsAt = lubridate::as_datetime(startsAt)) %>%
+      dplyr::mutate(dplyr::across(open:quoteVolume, as.numeric))
+
+  } else if (exchange == "coinbase-pro" & fn == "public_candles") {
+    nm1 <- c("open_time", "low", "high", "open", "close", "vol")
+
+    resp <- resp %>%
+      tibble::tibble(symbol = names(.))
+    resp %>%
+      tidyr::unnest_wider(data = resp, col = ., names_repair = ~nm1) %>%
+      suppressMessages
+
+  } else if (exchange == "crypto.com" & fn == "public_candles") {
+    resp$result$data %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::select(timestamp = t, open = o, high = h, low = l, close = c, vol = v)
+
+  } else if ((exchange == "ftx" | exchange == "ftx-us") & fn == "public_candles") {
+    resp$result %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::mutate(startTime = lubridate::as_datetime(startTime))
+
+  } else if (exchange == "gemini" & fn == "public_candles") {
+    nm1 <- c("open_time", "open", "high", "low", "close", "vol")
+
+    resp <- resp %>%
+      tibble::tibble(symbol = names(.))
+    resp %>%
+      tidyr::unnest_wider(data = resp, col = ., names_repair = ~nm1) %>%
+      suppressMessages
+
+  } else if (exchange == "huobi" & fn == "public_candles") {
+    resp$data %>%
+      purrr::map_dfr(magrittr::extract)
+
+  } else if (exchange == "kraken" & fn == "public_candles") {
+    nm1 <- c("open_time", "open", "high", "low", "close", "vwap", "vol", "count")
+
+    resp <- resp$result[[1]] %>%
+      tibble::tibble(symbol = names(.))
+    resp %>%
+      tidyr::unnest_wider(data = resp, col = ., names_repair = ~nm1) %>%
+      dplyr::mutate(dplyr::across(open:vol, as.numeric)) %>%
+      suppressMessages
+
+
+  } else if (exchange == "kucoin" & fn == "public_candles") {
+    nm1 <- c("open_time", "open", "close", "high", "low", "vol", "turnover")
+
+    resp <- resp$data %>%
+      tibble::tibble(symbol = names(.))
+    resp %>%
+      tidyr::unnest_wider(data = resp, col = ., names_repair = ~nm1) %>%
+      dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric)) %>%
+      suppressMessages
+
+  } else if (exchange == "poloniex" & fn == "public_candles") {
+    resp %>%
+      purrr::map_dfr(magrittr::extract)
+
+  }
 
   # public_trades ----
   # else if ((exchange == "binance" | exchange == "binance-us") & fn == "public_trades") {

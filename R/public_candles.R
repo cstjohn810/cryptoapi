@@ -79,6 +79,7 @@
 #' public_candles("bitstamp", time_frame = 60, limit = 1)
 #' public_candles("bittrex", time_frame = "MINUTE_1")
 #' public_candles("coinbase-pro")
+#' public_candles("crypto.com", time_frame = "1m")
 #' public_candles("ftx", time_frame = 60)
 #' public_candles("ftx-us", time_frame = 60)
 #' public_candles("gemini", time_frame = "1m")
@@ -113,55 +114,7 @@ public_candles <- function(exchange = "binance", base_asset = "BTC", quote_asset
   if(dry_run == TRUE) {
     resp
   } else {
-    resp
+    get_tidy_resp(exchange, "public_candles", base_asset, quote_asset, resp)
   }
 
-  # if (exchange == "binance" | exchange == "binance-us") {
-  #   resp %>%
-  #     purrr::map_dfr(magrittr::extract) %>%
-  #     dplyr::pull(price) %>%
-  #     as.numeric()
-  #
-  # } else if (exchange == "bitstamp") {
-  #   resp %>%
-  #     purrr::map_dfr(magrittr::extract) %>%
-  #     dplyr::pull(last) %>%
-  #     as.numeric()
-  #
-  # } else if (exchange == "coinbase") {
-  #   resp %>%
-  #     purrr::map_dfr(magrittr::extract) %>%
-  #     dplyr::pull(amount) %>%
-  #     as.numeric()
-  #
-  # } else if (exchange == "coinbase-pro") {
-  #   resp %>%
-  #     purrr::map_dfr(magrittr::extract) %>%
-  #     dplyr::pull(price) %>%
-  #     as.numeric()
-  #
-  # } else if (exchange == "crypto.com") {
-  #   resp$result$data$a
-  #
-  # } else if (exchange == "ftx" | exchange == "ftx-us") {
-  #   resp$result$price
-  #
-  # } else if (exchange == "gemini") {
-  #   resp$close %>%
-  #     as.numeric()
-  #
-  # } else if (exchange == "huobi") {
-  #   resp$tick$data[[1]]$price
-  #
-  # } else if (exchange == "kraken") {
-  #   resp$result[[1]]$p[1] %>%
-  #     as.numeric()
-  #
-  # } else if (exchange == "kucoin") {
-  #   resp$data$price %>%
-  #     as.numeric()
-  #
-  # } else {
-  #   resp
-  # }
 }

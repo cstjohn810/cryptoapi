@@ -60,14 +60,12 @@ View order book for varying depths:
 
 ```{r Order Book}
 public_order_book(exchange = "coinbase-pro", level = 2)
-
 ```
 
 View candle information (OHLC):
 
 ```{r Candles (OHLC)}
-public_candles("gemini", time_frame = "1m") %>% 
-  head(1)
+public_candles("gemini", time_frame = "1m")
 ```
 
 View recent trades:
