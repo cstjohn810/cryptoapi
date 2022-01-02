@@ -34,6 +34,10 @@ public_asset_list <- function(exchange, dry_run = FALSE, ...) {
 
   resp <- get_api_response(base_url, path_append, query_params, dry_run)
 
-  get_tidy_resp(exchange, "public_asset_list", base_asset, quote_asset, resp)
+  if(dry_run == TRUE) {
+    resp
+  } else {
+    get_tidy_resp(exchange, "public_asset_list", base_asset, quote_asset, resp)
+  }
 
 }

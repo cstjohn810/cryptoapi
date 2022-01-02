@@ -4,7 +4,7 @@
 \alias{get_tidy_resp}
 \title{Transform API response into tidy format}
 \usage{
-get_tidy_resp(exchange, fn, base_asset, quote_asset, resp)
+get_tidy_resp(exchange, fn, base_asset, quote_asset, resp, level = NULL)
 }
 \arguments{
 \item{exchange}{Which exchange to use for price and market data.}
@@ -16,6 +16,8 @@ get_tidy_resp(exchange, fn, base_asset, quote_asset, resp)
 \item{quote_asset}{Quote asset}
 
 \item{resp}{Response object}
+
+\item{level}{Optional parameter from public_order_book}
 }
 \value{
 

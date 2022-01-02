@@ -28,6 +28,12 @@ public_order_book(
 
 \item{level}{Parameter used for varying aggregations of order book.
 \itemize{
+  \item Optional for "bitstamp"
+    \itemize{
+      \item 0 (orders are not grouped at same price)
+      \item 1 (orders are grouped at same price - default)
+      \item 2 (orders with their order ids are not grouped at same price).
+    }
   \item Optional for "coinbase-pro"
     \itemize{
       \item Level 1 (Default) - The best bid, ask and auction info
@@ -36,12 +42,6 @@ public_order_book(
             Abuse of Level 3 via polling will cause your access to be limited or blocked.
       \item The size field is the sum of the size of the orders at that price, and num-orders is the count of orders at that price;
             size should not be multiplied by num-orders.
-    }
-  \item Optional for "bitstamp"
-    \itemize{
-      \item 0 (orders are not grouped at same price)
-      \item 1 (orders are grouped at same price - default)
-      \item 2 (orders with their order ids are not grouped at same price).
     }
   \item Required for "huobi"
     \itemize{

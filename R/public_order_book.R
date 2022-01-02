@@ -8,6 +8,12 @@
 #' @param ... Query parameters passed to API call
 #' @param level Parameter used for varying aggregations of order book.
 #'        \itemize{
+#'          \item Optional for "bitstamp"
+#'            \itemize{
+#'              \item 0 (orders are not grouped at same price)
+#'              \item 1 (orders are grouped at same price - default)
+#'              \item 2 (orders with their order ids are not grouped at same price).
+#'            }
 #'          \item Optional for "coinbase-pro"
 #'            \itemize{
 #'              \item Level 1 (Default) - The best bid, ask and auction info
@@ -16,12 +22,6 @@
 #'                    Abuse of Level 3 via polling will cause your access to be limited or blocked.
 #'              \item The size field is the sum of the size of the orders at that price, and num-orders is the count of orders at that price;
 #'                    size should not be multiplied by num-orders.
-#'            }
-#'          \item Optional for "bitstamp"
-#'            \itemize{
-#'              \item 0 (orders are not grouped at same price)
-#'              \item 1 (orders are grouped at same price - default)
-#'              \item 2 (orders with their order ids are not grouped at same price).
 #'            }
 #'          \item Required for "huobi"
 #'            \itemize{
@@ -84,93 +84,8 @@ public_order_book <- function(exchange = "binance", base_asset = "BTC", quote_as
 
   if(dry_run == TRUE) {
     resp
-  } else if (exchange == "binance" | exchange == "binance-us") {
-    tibble::tibble(bids = resp$bids,
-                   asks = resp$asks) %>%
-      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
-      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
-      dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
-
-  } else if (exchange == "bitstamp") {
-    resp_len <- min(length(resp$bids), length(resp$asks))
-
-    tibble::tibble(bids = resp$bids[1:resp_len],
-                   asks = resp$asks[1:resp_len]) %>%
-      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
-      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
-      dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
-
-  } else if (exchange == "bittrex") {
-
-    tibble::tibble(bids = resp$bid,
-                   asks = resp$ask) %>%
-      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
-      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
-      dplyr::select(bids_price = bids.rate, bids_qty = bids.quantity, asks_price = asks.rate, asks_qty = asks.quantity)
-
-  } else if(exchange == "coinbase-pro") {
-    resp_len <- min(length(resp$bids), length(resp$asks))
-
-    tibble::tibble(bids = resp$bids[1:resp_len],
-                   asks = resp$asks[1:resp_len]) %>%
-      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
-      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
-      dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
-
-  } else if(exchange == "crypto.com") {
-
-    tibble::tibble(bids = resp$result$data[[1]]$bids,
-                   asks = resp$result$data[[1]]$asks) %>%
-      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
-      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
-      dplyr::select(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
-
-  } else if(exchange == "ftx" | exchange == "ftx-us") {
-    tibble::tibble(bids = resp$result$bids,
-                   asks = resp$result$asks) %>%
-      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
-      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
-      dplyr::select(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
-
-  } else if(exchange == "gemini") {
-    resp_len <- min(length(resp$bids), length(resp$asks))
-
-    tibble::tibble(bids = resp$bids[1:resp_len],
-                   asks = resp$asks[1:resp_len]) %>%
-      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
-      tidyr::unnest_wider(col = asks, names_sep = ".")
-
-  } else if(exchange == "huobi") {
-
-    tibble::tibble(bids = resp$tick$bids,
-                   asks = resp$tick$asks) %>%
-      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
-      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
-      dplyr::select(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
-
-  } else if(exchange == "kraken") {
-    resp <- resp$result[[1]]
-    tibble::tibble(bids = resp$bids,
-                   asks = resp$asks) %>%
-      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
-      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
-      dplyr::select(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
-
-  } else if(exchange == "kucoin") {
-    tibble::tibble(bids = resp$data$bids,
-                   asks = resp$data$asks) %>%
-      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
-      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
-      dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
-
-  } else if(exchange == "poloniex") {
-    tibble::tibble(bids = resp$bids,
-                   asks = resp$asks) %>%
-      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
-      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
-      dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
-
   } else {
-    resp
+    get_tidy_resp(exchange, "public_order_book", base_asset, quote_asset, resp, level)
   }
+
 }

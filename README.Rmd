@@ -60,6 +60,7 @@ View order book for varying depths:
 
 ```{r Order Book}
 public_order_book(exchange = "coinbase-pro", level = 2)
+
 ```
 
 View candle information (OHLC):
@@ -73,7 +74,6 @@ View recent trades:
 
 ```{r Trades}
 public_trades(exchange = "kraken")
-
 ```
 View additional asset information:
 

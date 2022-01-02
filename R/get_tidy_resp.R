@@ -5,10 +5,11 @@
 #' @param base_asset Base asset
 #' @param quote_asset Quote asset
 #' @param resp Response object
+#' @param level Optional parameter from public_order_book
 #'
 #' @return
 #'
-get_tidy_resp <- function (exchange, fn, base_asset, quote_asset, resp) {
+get_tidy_resp <- function (exchange, fn, base_asset, quote_asset, resp, level = NULL) {
   # public_ticker_price ----
 
   if ((exchange == "binance" | exchange == "binance-us" | exchange == "coinbase-pro") & fn == "public_ticker_price") {
@@ -182,59 +183,109 @@ get_tidy_resp <- function (exchange, fn, base_asset, quote_asset, resp) {
   }
 
   # public_order_book ----
-  # else if ((exchange == "binance" | exchange == "binance-us") & fn == "public_order_book") {
-  #   list(...,
-  #        symbol = paste0(base_asset, quote_asset),
-  #        limit = depth)
-  #
-  # }
-  # else if (exchange == "bitstamp" & fn == "public_order_book") {
-  #   list(...,
-  #        group = level)
-  #
-  # } else if (exchange == "bittrex" & fn == "public_order_book") {
-  #   list(...,
-  #        depth = depth)
-  #
-  # } else if (exchange == "coinbase-pro" & fn == "public_order_book") {
-  #   list(...,
-  #        level = level)
-  #
-  # } else if (exchange == "crypto.com" & fn == "public_order_book") {
-  #   list(...,
-  #        instrument_name = paste0(toupper(base_asset), "_", toupper(quote_asset)),
-  #        depth = depth)
-  #
-  # } else if ((exchange == "ftx" | exchange == "ftx-us") & fn == "public_order_book") {
-  #   list(...,
-  #        depth = depth)
-  #
-  # } else if (exchange == "gemini" & fn == "public_order_book") {
-  #   list(...,
-  #        limit_bids = depth,
-  #        limit_asks = depth)
-  #
-  # } else if (exchange == "huobi" & fn == "public_order_book") {
-  #   list(...,
-  #        symbol = paste0(tolower(base_asset), tolower(quote_asset)),
-  #        type = level)
-  #
-  # } else if (exchange == "kraken" & fn == "public_order_book") {
-  #   list(...,
-  #        pair = paste0(base_asset, quote_asset),
-  #        count = depth)
-  #
-  # } else if (exchange == "kucoin" & fn == "public_order_book") {
-  #   list(...,
-  #        symbol = paste0(toupper(base_asset), "-", toupper(quote_asset)))
-  #
-  # } else if (exchange == "poloniex" & fn == "public_order_book") {
-  #   list(...,
-  #        command = "returnOrderBook",
-  #        currencyPair = paste0(toupper(quote_asset), "_", toupper(base_asset)),
-  #        depth = depth)
-  #
-  # }
+  else if ((exchange == "binance" | exchange == "binance-us" | exchange == "poloniex") & fn == "public_order_book") {
+    tibble::tibble(bids = resp$bids, asks = resp$asks) %>%
+      tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+      tidyr::unnest_wider(col = asks, names_sep = ".") %>%
+      dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2) %>%
+      dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric))
+
+    } else if (exchange == "bitstamp" & fn == "public_order_book") {
+
+      resp_len <- min(length(resp$bids), length(resp$asks))
+
+      resp <- tibble::tibble(timestamp = as.numeric(resp$timestamp), bids = resp$bids[1:resp_len], asks = resp$asks[1:resp_len]) %>%
+        tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+        tidyr::unnest_wider(col = asks, names_sep = ".")
+
+      if (length(level) == 0) {
+         resp <- resp %>%
+          dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
+      } else if (level == 1 | level == 3) {
+        resp <- resp %>%
+          dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
+      } else if (level == 2) {
+        resp <- resp %>%
+          dplyr::rename(bids_price = bids.1, bids_qty = bids.2, bid_id = bids.3, asks_price = asks.1, asks_qty = asks.2, ask_id = asks.3)
+      }
+      resp %>%
+        dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric))
+
+    } else if (exchange == "bittrex" & fn == "public_order_book") {
+
+      tibble::tibble(bids = resp$bid, asks = resp$ask) %>%
+        tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+        tidyr::unnest_wider(col = asks, names_sep = ".") %>%
+        dplyr::select(bids_price = bids.rate, bids_qty = bids.quantity, asks_price = asks.rate, asks_qty = asks.quantity) %>%
+        dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric))
+
+    } else if (exchange == "coinbase-pro" & fn == "public_order_book") {
+
+      resp_len <- min(length(resp$bids), length(resp$asks))
+
+      resp <- tibble::tibble(bids = resp$bids[1:resp_len], asks = resp$asks[1:resp_len]) %>%
+        tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+        tidyr::unnest_wider(col = asks, names_sep = ".")
+
+      if (length(level) == 0) {
+        resp %>%
+          dplyr::select(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2) %>%
+          dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric))
+      } else if (level == 1 | level == 2) {
+        resp %>%
+          dplyr::select(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2) %>%
+          dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric))
+      } else if (level == 3) {
+        resp %>%
+          dplyr::rename(bids_price = bids.1, bids_qty = bids.2, bid_id = bids.3, asks_price = asks.1, asks_qty = asks.2, ask_id = asks.3) %>%
+          dplyr::mutate(dplyr::across(.cols = c(bids_price, bids_qty, asks_price, asks_qty), as.numeric))
+      }
+
+
+    } else if(exchange == "crypto.com" & fn == "public_order_book") {
+
+      tibble::tibble(bids = resp$result$data[[1]]$bids, asks = resp$result$data[[1]]$asks) %>%
+        tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+        tidyr::unnest_wider(col = asks, names_sep = ".") %>%
+        dplyr::select(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
+
+    } else if(exchange == "ftx" | exchange == "ftx-us" & fn == "public_order_book") {
+      tibble::tibble(bids = resp$result$bids, asks = resp$result$asks) %>%
+        tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+        tidyr::unnest_wider(col = asks, names_sep = ".") %>%
+        dplyr::select(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
+
+    } else if(exchange == "gemini" & fn == "public_order_book") {
+      resp_len <- min(length(resp$bids), length(resp$asks))
+
+      tibble::tibble(bids = resp$bids[1:resp_len], asks = resp$asks[1:resp_len]) %>%
+        tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+        tidyr::unnest_wider(col = asks, names_sep = ".") %>%
+        dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric))
+
+    } else if(exchange == "huobi" & fn == "public_order_book") {
+
+      tibble::tibble(timestamp = resp$ts, bids = resp$tick$bids, asks = resp$tick$asks) %>%
+        tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+        tidyr::unnest_wider(col = asks, names_sep = ".") %>%
+        dplyr::select(timestamp, bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2)
+
+    } else if(exchange == "kraken" & fn == "public_order_book") {
+      resp <- resp$result[[1]]
+      tibble::tibble(bids = resp$bids, asks = resp$asks) %>%
+        tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+        tidyr::unnest_wider(col = asks, names_sep = ".") %>%
+        dplyr::select(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2) %>%
+        dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric))
+
+    } else if(exchange == "kucoin" & fn == "public_order_book") {
+      tibble::tibble(bids = resp$data$bids, asks = resp$data$asks) %>%
+        tidyr::unnest_wider(col = bids, names_sep = ".") %>%
+        tidyr::unnest_wider(col = asks, names_sep = ".") %>%
+        dplyr::rename(bids_price = bids.1, bids_qty = bids.2, asks_price = asks.1, asks_qty = asks.2) %>%
+        dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric))
+
+    }
 
   # public_candles ----
   # else if ((exchange == "binance" | exchange == "binance-us") & fn == "public_candles") {
