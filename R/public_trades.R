@@ -72,54 +72,7 @@ public_trades <- function(exchange = "binance", base_asset = "BTC", quote_asset 
 
   if(dry_run == TRUE) {
     resp
-  } else if (exchange == "binance" | exchange == "binance-us") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract)
-
-  } else if (exchange == "bitstamp") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::mutate(type = ifelse(type == "0", "buy", "sell"))
-
-  } else if (exchange == "bittrex") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract)
-
-  } else if (exchange == "coinbase-pro") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract)
-
-  } else if (exchange == "crypto.com") {
-    resp$result$data %>%
-      purrr::map_dfr(magrittr::extract) %>%
-      dplyr::rename("trade_price" = "p", "trade_qty" = "q", "side" = "s", "trade_id" = "d", "timestamp" = "t", "instrument" = "i")
-
-  } else if (exchange == "ftx" | exchange == "ftx-us") {
-    resp$result %>%
-      purrr::map_dfr(magrittr::extract)
-
-  } else if (exchange == "gemini") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract)
-
-  } else if (exchange == "huobi") {
-    resp$data[[1]]$data %>%
-      purrr::map_dfr(magrittr::extract)
-
-  } else if (exchange == "kraken") {
-    tibble::tibble(result = resp$result[[1]]) %>%
-      tidyr::unnest_wider(col = result, names_sep = ".") %>%
-      dplyr::rename("price" = "result.1", "volume" = "result.2", "time" = "result.3", "side" = "result.4", "type" = "result.5", "misc" = "result.6")
-
-  } else if (exchange == "kucoin") {
-    resp$data %>%
-      purrr::map_dfr(magrittr::extract)
-
-  } else if (exchange == "poloniex") {
-    resp %>%
-      purrr::map_dfr(magrittr::extract)
-
-  } else {
-    resp
-  }
+    } else {
+      get_tidy_resp(exchange, "public_trades", base_asset, quote_asset, resp)
+    }
 }

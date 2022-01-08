@@ -37,20 +37,7 @@ public_asset_info <- function(exchange = "coinbase-pro", base_asset = "BTC", quo
 
   if(dry_run == TRUE) {
     resp
-  } else if(exchange == "bittrex") {
-    tibble::tibble(result = resp) %>%
-      tidyr::unnest_wider(col = result)
-
-  } else if (exchange == "coinbase-pro") {
-    resp %>% tibble::as_tibble()
-
-  } else if (exchange == "gemini") {
-    resp %>% tibble::as_tibble()
-
-  } else if (exchange == "kucoin") {
-    resp$data
-
   } else {
-    resp
+    get_tidy_resp(exchange, "public_asset_info", base_asset, quote_asset, resp)
   }
 }
