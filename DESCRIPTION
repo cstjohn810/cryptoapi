@@ -10,12 +10,14 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
+    askpass,
     dplyr,
     httr2,
     jsonlite,
     lubridate,
     magrittr,
     purrr,
+    rlang,
     tibble,
     tidyr
 RoxygenNote: 7.1.2

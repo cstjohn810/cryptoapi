@@ -38,6 +38,8 @@ library(cryptoapi)
 library(magrittr)
 ```
 
+## Public API Calls
+
 Can pull out the current ticker price of any asset from any exchange:
 
 ```{r Ticker Price}
@@ -73,11 +75,19 @@ View recent trades:
 ```{r Trades}
 public_trades(exchange = "kraken")
 ```
+
 View additional asset information:
 
 ```{r Asset Info}
 public_asset_info("gemini")
+```
 
+## Private API Calls (Keys Required)
 
+Set API Keys as environment variables:
+In normal usage, do not set the key value in the initial function call. Leave it NULL and input the key into the [askpass](https://rdrr.io/cran/askpass/man/askpass.html) popup window.
+
+```{r}
+set_api_key("binance", "test", key = "1234")
 ```
 

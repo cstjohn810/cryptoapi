@@ -29,11 +29,13 @@ library(cryptoapi)
 library(magrittr)
 ```
 
+## Public API Calls
+
 Can pull out the current ticker price of any asset from any exchange:
 
 ``` r
 public_ticker_price(exchange = "binance", base_asset = "BTC", quote_asset = "USD")
-#> [1] 41955.53
+#> [1] 41820.21
 ```
 
 Alternatively, get extra price information by toggling the price\_only
@@ -44,7 +46,7 @@ public_ticker_price(exchange = "ftx", base_asset = "BTC", quote_asset = "USD", p
 #> # A tibble: 1 x 20
 #>   name  enabled postOnly priceIncrement sizeIncrement minProvideSize  last   bid
 #>   <chr> <lgl>   <lgl>             <dbl>         <dbl>          <dbl> <dbl> <dbl>
-#> 1 BTC/~ TRUE    FALSE                 1        0.0001         0.0001 41959 41958
+#> 1 BTC/~ TRUE    FALSE                 1        0.0001         0.0001 41824 41823
 #> # ... with 12 more variables: ask <dbl>, price <dbl>, type <chr>,
 #> #   baseCurrency <chr>, quoteCurrency <chr>, restricted <lgl>,
 #> #   highLeverageFeeExempt <lgl>, change1h <dbl>, change24h <dbl>,
@@ -77,20 +79,20 @@ View order book for varying depths:
 
 ``` r
 public_order_book(exchange = "coinbase-pro", level = 2)
-#> # A tibble: 12,640 x 4
-#>    bids_price bids_qty asks_price   asks_qty
-#>         <dbl>    <dbl>      <dbl>      <dbl>
-#>  1     41956.  0.218       41956. 0.00000353
-#>  2     41953.  0.286       41961. 1.19      
-#>  3     41951.  0.0238      41962. 0.0238    
-#>  4     41950.  0.00696     41963. 0.333     
-#>  5     41949.  0.0558      41965. 0.286     
-#>  6     41949.  0.0524      41965. 0.333     
-#>  7     41949.  0.048       41965. 0.944     
-#>  8     41949.  0.169       41965. 0.238     
-#>  9     41949.  0.238       41966. 0.05      
-#> 10     41947.  0.118       41966. 0.0596    
-#> # ... with 12,630 more rows
+#> # A tibble: 12,774 x 4
+#>    bids_price bids_qty asks_price asks_qty
+#>         <dbl>    <dbl>      <dbl>    <dbl>
+#>  1     41819. 0.0378       41822.  0.05   
+#>  2     41819. 0.024        41822.  0.287  
+#>  3     41816. 0.000115     41822.  1.20   
+#>  4     41814. 0.0259       41823.  0.047  
+#>  5     41814. 1.20         41823.  0.05   
+#>  6     41814. 0.119        41824.  0.052  
+#>  7     41814. 0.170        41824.  0.00206
+#>  8     41811. 0.104        41825.  0.118  
+#>  9     41811. 0.0952       41825.  0.052  
+#> 10     41811. 0.000595     41825.  0.11   
+#> # ... with 12,764 more rows
 ```
 
 View candle information (OHLC):
@@ -100,16 +102,16 @@ public_candles("gemini", time_frame = "1m")
 #> # A tibble: 1,441 x 6
 #>        open_time   open   high    low  close     vol
 #>            <dbl>  <dbl>  <dbl>  <dbl>  <dbl>   <dbl>
-#>  1 1641603300000 41957. 41984. 41957. 41982. 0.0320 
-#>  2 1641603240000 41989. 41989. 41957. 41957. 0.00127
-#>  3 1641603180000 41970. 41993. 41970. 41989. 1.63   
-#>  4 1641603120000 41951. 41979. 41949. 41970. 0.154  
-#>  5 1641603060000 41957. 41957. 41922. 41951. 0.989  
-#>  6 1641603000000 41953. 41957. 41923. 41957. 0.0464 
-#>  7 1641602940000 41883. 41953. 41878. 41953. 0.306  
-#>  8 1641602880000 41800. 41974. 41800  41883. 1.05   
-#>  9 1641602820000 41804. 41815. 41800. 41800. 0.0122 
-#> 10 1641602760000 41814  41827. 41803. 41804. 0.478  
+#>  1 1641611760000 41833. 41833. 41830. 41830. 0.0487 
+#>  2 1641611700000 41847. 41854. 41833. 41833. 0.00286
+#>  3 1641611640000 41840. 41855. 41840. 41847. 0.0761 
+#>  4 1641611580000 41882. 41882. 41833. 41840. 0.0197 
+#>  5 1641611520000 41891. 41904. 41882. 41882. 0.0698 
+#>  6 1641611460000 41841. 41891. 41841. 41891. 0.0424 
+#>  7 1641611400000 41892. 41894. 41841. 41841. 1.54   
+#>  8 1641611340000 41886. 41910. 41886. 41892. 0.0187 
+#>  9 1641611280000 41858. 41893. 41852. 41886. 0.0118 
+#> 10 1641611220000 41847. 41866. 41847. 41858. 0.0873 
 #> # ... with 1,431 more rows
 ```
 
@@ -118,18 +120,18 @@ View recent trades:
 ``` r
 public_trades(exchange = "kraken")
 #> # A tibble: 1,000 x 6
-#>     price   volume time                side  type  misc 
-#>     <dbl>    <dbl> <dttm>              <chr> <chr> <chr>
-#>  1 41572. 0.000957 2022-01-07 23:40:51 b     m     ""   
-#>  2 41572. 0.000187 2022-01-07 23:41:03 s     l     ""   
-#>  3 41572. 0.00430  2022-01-07 23:41:05 b     m     ""   
-#>  4 41571. 0.0116   2022-01-07 23:41:12 b     m     ""   
-#>  5 41571. 0.00921  2022-01-07 23:41:17 b     m     ""   
-#>  6 41571. 0.000748 2022-01-07 23:41:18 b     l     ""   
-#>  7 41571. 0.0135   2022-01-07 23:41:20 b     l     ""   
-#>  8 41570. 0.000724 2022-01-07 23:41:24 s     l     ""   
-#>  9 41570. 0.000837 2022-01-07 23:41:45 s     l     ""   
-#> 10 41571. 0.00304  2022-01-07 23:41:55 b     m     ""   
+#>     price volume time                side  type  misc 
+#>     <dbl>  <dbl> <dttm>              <chr> <chr> <chr>
+#>  1 41971. 0.0004 2022-01-08 01:30:02 b     l     ""   
+#>  2 41971. 0.0005 2022-01-08 01:30:02 b     l     ""   
+#>  3 41984. 0.0515 2022-01-08 01:30:02 b     l     ""   
+#>  4 41995. 0.0385 2022-01-08 01:30:03 b     l     ""   
+#>  5 42009. 0.136  2022-01-08 01:30:03 b     l     ""   
+#>  6 42009. 0.293  2022-01-08 01:30:03 b     l     ""   
+#>  7 42013. 0.162  2022-01-08 01:30:03 b     l     ""   
+#>  8 42022. 0.086  2022-01-08 01:30:03 b     l     ""   
+#>  9 42026. 0.113  2022-01-08 01:30:03 b     l     ""   
+#> 10 41997. 0.150  2022-01-08 01:30:03 b     l     ""   
 #> # ... with 990 more rows
 ```
 
@@ -142,4 +144,15 @@ public_asset_info("gemini")
 #>   <chr>  <chr>         <chr>               <dbl>           <dbl>          <dbl>
 #> 1 BTCUSD BTC           USD            0.00000001            0.01        0.00001
 #> # ... with 2 more variables: status <chr>, wrap_enabled <lgl>
+```
+
+## Private API Calls (Keys Required)
+
+Set API Keys as environment variables: In normal usage, do not set the
+key value in the initial function call. Leave it NULL and input the key
+into the [askpass](https://rdrr.io/cran/askpass/man/askpass.html) popup
+window.
+
+``` r
+set_api_key("binance", "test", key = "1234")
 ```
