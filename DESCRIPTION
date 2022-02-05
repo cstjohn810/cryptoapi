@@ -17,6 +17,7 @@ Imports:
     lubridate,
     magrittr,
     purrr,
+    readr,
     rlang,
     tibble,
     tidyr

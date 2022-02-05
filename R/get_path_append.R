@@ -95,6 +95,23 @@ get_path_append <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
     # exchange == "kraken" & fn == "public_asset_info" ~ "public/Depth",
     exchange == "kucoin" & fn == "public_asset_info" ~ paste0("api/v2/currencies/", base_asset),
 
+# private_balance ----
+    (exchange == "binance" | exchange == "binance-us") & fn == "private_balance" ~  "api/v3/account",
+    exchange == "bitstamp" & fn == "private_balance" ~  "balance",
+    exchange == "bittrex" & fn == "private_balance" ~ "balances",
+    exchange == "coinbase" & fn == "private_balance" ~  "accounts",
+    exchange == "coinbase-pro" & fn == "private_balance" ~ "accounts",
+    exchange == "crypto.com" & fn == "private_balance" ~  "private/get-account-summary",
+    (exchange == "ftx" | exchange == "ftx-us") & fn == "private_balance" ~ "wallet/all_balances",
+    exchange == "gemini" & fn == "private_balance" ~ "account",
+    exchange == "huobi" & fn == "private_balance" ~ "account/accounts",
+    exchange == "kraken" & fn == "private_balance" ~ "private/Balance",
+    exchange == "kucoin" & fn == "private_balance" ~ "api/v1/accounts",
+    exchange == "poloniex" & fn == "private_balance" ~ "returnCompleteBalances",
+
+
+
+
 # TRUE ----
     TRUE ~ "Unsupported exchange or invalid entry"
   )

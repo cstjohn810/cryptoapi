@@ -1,4 +1,4 @@
-#' Set API Key
+#' Set API Key as R Environment Variable
 #'
 #' @param exchange Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase",
 #'        "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".
@@ -22,7 +22,7 @@ set_api_key <- function(exchange, key_type, key = NULL) {
   }
 
   if (is.null(key)) {
-    key <- askpass::askpass("Please enter your API key")
+    key <- askpass::askpass(paste("Please enter your", key_type, "key"))
   }
 
   args <- setNames(key, paste(exchange, key_type, sep = "_"))

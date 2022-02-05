@@ -2,7 +2,7 @@
 % Please edit documentation in R/set_api_key.R
 \name{set_api_key}
 \alias{set_api_key}
-\title{Set API Key}
+\title{Set API Key as R Environment Variable}
 \usage{
 set_api_key(exchange, key_type, key = NULL)
 }
@@ -18,5 +18,5 @@ set_api_key(exchange, key_type, key = NULL)
 
 }
 \description{
-Set API Key
+Set API Key as R Environment Variable
 }
