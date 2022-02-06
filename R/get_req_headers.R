@@ -1,4 +1,4 @@
-get_req_headers <- function(exchange, fn, base_asset = NULL, quote_asset = NULL, ...) {
+get_req_headers <- function(exchange, portfolio = NULL, fn, base_asset = NULL, quote_asset = NULL, ...) {
   if ((exchange == "binance" | exchange == "binance-us")) {
     exchange
 
@@ -13,23 +13,23 @@ get_req_headers <- function(exchange, fn, base_asset = NULL, quote_asset = NULL,
 
   } else if (exchange == "coinbase-pro") {
 
-    req_url <- paste0(get_base_url(exchange), "/", get_path_append(exchange, fn, base_asset, quote_asset))
+    public_var <- toupper(paste(exchange, "api", portfolio, sep = "_"))
+    secret_var <- toupper(paste(exchange, "secret", portfolio, sep = "_"))
+    passphrase_var <- toupper(paste(exchange, "passphrase", portfolio, sep = "_"))
+
+    req_url <- paste0("/", get_path_append(exchange, fn, base_asset, quote_asset), "/")
     req_url
 
     timestamp <- format(as.numeric(Sys.time()), digits = 13)
-    # key <- RCurl::base64Decode(Sys.getenv(COINBASE-PRO_SECRET), mode = "raw")
-    key <- RCurl::base64Decode(Sys.getenv("COINBASE_SECRET_DEFAULT"), mode = "raw")
+    key <- RCurl::base64Decode(Sys.getenv(secret_var), mode = "raw")
     method <- "GET"
     what <- paste0(timestamp, method, req_url)
 
     sign <- RCurl::base64Encode(digest::hmac(key, what, algo = "sha256", raw = TRUE))
-    list(...,
-      # 'CB-ACCESS-KEY' = Sys.getenv(COINBASE-PRO_API),
-      'CB-ACCESS-KEY' = Sys.getenv("COINBASE_API_DEFAULT"),
+    c('CB-ACCESS-KEY' = Sys.getenv(public_var),
       'CB-ACCESS-SIGN' = sign,
       'CB-ACCESS-TIMESTAMP' = timestamp,
-      # 'CB-ACCESS-PASSPHRASE' = Sys.getenv(COINBASE-PRO_PASSPHRASE),
-      'CB-ACCESS-PASSPHRASE' = Sys.getenv("COINBASE_PASSPHRASE_DEFAULT"),
+      'CB-ACCESS-PASSPHRASE' = Sys.getenv(passphrase_var),
       'Content-Type' = 'application/json'
     )
 

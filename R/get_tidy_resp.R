@@ -440,24 +440,31 @@ get_tidy_resp <- function (exchange, fn, base_asset, quote_asset, resp, level = 
   }
 
   # public_asset_info ----
-    else if(exchange == "bittrex") {
+    else if(exchange == "bittrex" & fn == "public_asset_info") {
     tibble::tibble(result = resp) %>%
       tidyr::unnest_wider(col = result) %>%
         dplyr::mutate(dplyr::across(c(high:quoteVolume, percentChange), as.numeric)) %>%
         dplyr::mutate(updatedAt = lubridate::as_datetime(updatedAt))
 
-  } else if (exchange == "coinbase-pro") {
+  } else if (exchange == "coinbase-pro" & fn == "public_asset_info") {
     resp %>%
       tibble::as_tibble() %>%
       dplyr::mutate(dplyr::across(dplyr::everything(), as.numeric))
 
-  } else if (exchange == "gemini") {
+  } else if (exchange == "gemini" & fn == "public_asset_info") {
     resp %>%
       tibble::as_tibble() %>%
       dplyr::mutate(min_order_size = as.numeric(min_order_size))
 
-  } else if (exchange == "kucoin") {
+  } else if (exchange == "kucoin" & fn == "public_asset_info") {
     resp$data
+  }
+  # private_balance ----
+  else if (exchange == "coinbase-pro" & fn == "private_balance") {
+    resp %>%
+      purrr::map_dfr(magrittr::extract) %>%
+      dplyr::mutate(dplyr::across(balance:available, as.numeric))
+
   }
   # else ----
   else {

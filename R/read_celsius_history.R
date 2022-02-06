@@ -4,7 +4,7 @@
 #'   API access seems difficult at this moment for individuals with Celsius but it is possible
 #'   to export a transaction log manually.
 #'
-#' @param path
+#' @param path File path to downloaded csv.
 #'
 #' @return
 #' @export

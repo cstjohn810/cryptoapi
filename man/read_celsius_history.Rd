@@ -7,7 +7,7 @@
 read_celsius_history(path)
 }
 \arguments{
-\item{path}{}
+\item{path}{File path to downloaded csv.}
 }
 \value{
 

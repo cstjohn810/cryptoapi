@@ -4,13 +4,15 @@
 \alias{set_api_key}
 \title{Set API Key as R Environment Variable}
 \usage{
-set_api_key(exchange, key_type, key = NULL)
+set_api_key(exchange, key_type, portfolio = NULL, key = NULL)
 }
 \arguments{
 \item{exchange}{Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase",
 "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".}
 
 \item{key_type}{Key type: Either "API", "SECRET", or "PASSPHRASE".}
+
+\item{portfolio}{Optional value if you have multiple portfolios in a single exchange with different API keys.}
 
 \item{key}{Leave NULL and input in the askpass popup.}
 }

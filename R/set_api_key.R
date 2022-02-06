@@ -3,15 +3,17 @@
 #' @param exchange Which exchange to use for price and market data. Choices are "binance", "binance-us", "bitstamp", "bittrex", "coinbase",
 #'        "coinbase-pro", "crypto.com", "ftx", "ftx-us", "gemini", "huobi", "kraken", "kucoin", and "poloniex".
 #' @param key_type Key type: Either "API", "SECRET", or "PASSPHRASE".
+#' @param portfolio Optional value if you have multiple portfolios in a single exchange with different API keys.
 #' @param key Leave NULL and input in the askpass popup.
 #'
 #' @return
 #' @export
 #'
-set_api_key <- function(exchange, key_type, key = NULL) {
+set_api_key <- function(exchange, key_type, portfolio = NULL, key = NULL) {
 
   exchange <- toupper(exchange)
   key_type <- toupper(key_type)
+  portfolio <- toupper(portfolio)
 
   if (get_base_url(tolower(exchange)) == "Unsupported exchange or invalid entry") {
     stop("Unsupported exchange or invalid entry")
@@ -25,7 +27,7 @@ set_api_key <- function(exchange, key_type, key = NULL) {
     key <- askpass::askpass(paste("Please enter your", key_type, "key"))
   }
 
-  args <- setNames(key, paste(exchange, key_type, sep = "_"))
+  args <- setNames(key, paste(exchange, key_type, portfolio, sep = "_"))
 
   call <- rlang::expr(Sys.setenv(!!!args))
 

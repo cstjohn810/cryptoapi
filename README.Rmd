@@ -85,9 +85,15 @@ public_asset_info("gemini")
 ## Private API Calls (Keys Required)
 
 Set API Keys as environment variables:
-In normal usage, do not set the key value in the initial function call. Leave it NULL and input the key into the [askpass](https://rdrr.io/cran/askpass/man/askpass.html) popup window.
+In normal usage, do not set the key value in the initial function call. Leave it NULL and input the key into the [askpass](https://rdrr.io/cran/askpass/man/askpass.html) popup window. You may optionally specify a separate portfolio if you have multiple in a single exchange.
 
-```{r}
-set_api_key("binance", "test", key = "1234")
+```{r eval=FALSE}
+set_api_key(exchange = "binance", key_type = "test", portfolio = "default")
+```
+
+Get coin balance. Currently only coinbase-pro is supported. You may optionally specify a separate portfolio if you have multiple in a single exchange.
+
+```{r eval=FALSE}
+private_balance(exchange = "coinbase-pro", portfolio = "default")
 ```
 
